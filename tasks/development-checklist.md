@@ -135,7 +135,7 @@
   - 命令：`cargo test config`
   - 命令：`cargo run -- config show`
 - [x] 提交任务 1.2。
-  - commit：`feat: 实现 hermeship 配置模型`
+  - commit：`feat: 实现 hermeship 配置模型与 config CLI`
 
 ### 任务 1.3：质量门禁与仓库基础
 
@@ -694,6 +694,14 @@
 
 最新记录放在最上方。
 
+### 2026-06-15 - 最新开发状态交接更新
+
+- [x] 已将 `docs/development-status.md` 更新到最新阶段提交：`50723af feat: 实现 hermeship 配置模型与 config CLI`。
+- [x] 已明确 Milestone 0、1.1、1.2 已完成，Milestone 1.3 及后续仍未完成。
+- [x] 已将 `tasks/todo.md` 切换为下一阶段任务：Milestone 1.3 质量门禁与仓库基础。
+- [x] 已更新 `README.md` 的 Development Status，移除 Rust 尚未开始的过期描述。
+- [x] 下一步执行 Milestone 1.3：更新 `.gitignore`、rustfmt/clippy 约束说明和测试 fixture 目录，并运行基础质量门禁。
+
 ### 2026-06-15 - Milestone 1.2 配置模型
 
 - [x] 已复习 `tasks/lessons.md`，确认阶段完成后必须验证并提交，且不混入无关改动。
@@ -705,7 +713,7 @@
 - [x] 已实现配置环境变量覆盖：`HERMESHIP_DAEMON_URL`、`HERMESHIP_DISCORD_TOKEN`、`HERMESHIP_DEFAULT_CHANNEL`、`HERMESHIP_DRY_RUN`。
 - [x] 已将 `hermeship config path`、`hermeship config show`、`hermeship config verify` 接入真实配置逻辑，不再使用 Milestone 1.1 占位输出。
 - [x] 已运行验证：`cargo fmt --all -- --check`、`cargo test config`、`cargo run -- config show` 均通过。
-- [x] 提交状态：随本阶段提交 `feat: 实现 hermeship 配置模型` 一并完成。
+- [x] 提交状态：随本阶段提交 `50723af feat: 实现 hermeship 配置模型与 config CLI` 一并完成。
 
 ### 2026-06-15 - 开发状态交接更新
 
