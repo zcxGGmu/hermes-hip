@@ -1,6 +1,6 @@
 # Hermeship 开发状态
 
-最后更新：2026-06-15 22:43:57 CST
+最后更新：2026-06-15 23:13:47 CST
 
 本文是下次启动 Codex 会话时的状态入口。执行开发前仍以 `tasks/development-checklist.md` 的 checkbox 为准；当前阶段计划维护在 `tasks/todo.md`。
 
@@ -12,8 +12,8 @@
 - 方案文档与执行清单已经拆分：方案文档维护架构和边界，`tasks/development-checklist.md` 和 `tasks/todo.md` 维护可勾选进度。
 - 默认测试策略已经确定：使用本地 fixture、fake sink、fake HTTP、fake Hermes home、fake hermeship binary；真实 Discord/Hermes 只进入 live verification。
 - 当前开发分支：`codex/milestone-1-cli`。
-- 当前最新功能阶段提交：`feat: 增加 Hermes 事件隐私清洗`。
-- 当前工作树在本次状态更新前只包含 Milestone 2.3 预期变更；如后续继续开发，仍需先运行 `git status --short --branch` 确认。
+- 当前最新功能阶段提交：`175009d feat: 增加 Hermes 事件隐私清洗`。
+- 当前工作树在本次交接更新前为干净状态；如后续继续开发，仍需先运行 `git status --short --branch` 确认。
 - 当前下一步：从 Milestone 3 继续，优先执行任务 3.1：Daemon health 与 client。
 
 ## 已完成
@@ -96,7 +96,7 @@
 - 已新增合成 fixture：`tests/fixtures/privacy/sensitive_payload.json`，不包含真实 token、cookie、secret、完整 prompt、完整对话或 provider request/response body。
 - 已根据代码审查修复摘要字段泄漏、`Authorization: Bearer ...` / `api_key = ...` inline secret 泄漏、URL query secret 泄漏、camelCase/acronym alias 绕过、结构化摘录泄漏和 fixture body hygiene 问题。
 - 已运行验证：`cargo test privacy`（10 passed）、`cargo test event`（14 passed）、`cargo test events`（6 passed）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（41 passed）。
-- 已提交：`feat: 增加 Hermes 事件隐私清洗`。
+- 已提交：`175009d feat: 增加 Hermes 事件隐私清洗`。
 
 ## 未完成
 
@@ -116,7 +116,7 @@
 2. 确认当前分支、最新提交和未提交变更：
    - `git status --short --branch`
    - `git log -3 --oneline`
-3. 确认最新已完成功能阶段提交为 `feat: 增加 Hermes 事件隐私清洗`。
+3. 确认最新已完成功能阶段提交为 `175009d feat: 增加 Hermes 事件隐私清洗`。
 4. 读取当前相关代码：
    - `src/cli.rs`
    - `src/config.rs`
@@ -151,14 +151,14 @@
 
 当前状态：
 - 当前分支是 codex/milestone-1-cli。
-- 最新功能阶段提交：feat: 增加 Hermes 事件隐私清洗。
+- 最新功能阶段提交：175009d feat: 增加 Hermes 事件隐私清洗。
 - Milestone 0 已完成并提交：af57c49 docs: 明确 hermeship 完整项目方向。
 - Milestone 1.1 已完成并提交：d03170e chore: 搭建 Hermeship Rust CLI 骨架。
 - Milestone 1.2 已完成并提交：50723af feat: 实现 hermeship 配置模型与 config CLI。
 - Milestone 1.3 已完成并提交：70c8f03 chore: 增加 Rust 质量门禁与仓库基础。
 - Milestone 2.1 已完成并提交：5584b13 feat: 完成 Hermes 入口事件模型与 emit 解析。
 - Milestone 2.2 已完成并提交：b799415 feat: 实现 Hermes typed event model。
-- Milestone 2.3 已完成并提交：feat: 增加 Hermes 事件隐私清洗。
+- Milestone 2.3 已完成并提交：175009d feat: 增加 Hermes 事件隐私清洗。
 - 已实现 src/events.rs：IncomingEvent、RoutingMetadata、字段别名反序列化、空/null payload 归一，以及 MessageFormat 的单一复用/重导出策略。
 - 已实现 src/event/：EventEnvelope、EventBody、EventMetadata、EventPriority、Hermes canonical mapping、IncomingEvent -> EventEnvelope conversion。
 - 已实现 src/privacy.rs：sanitize_payload、redact_value、excerpt_policy、敏感 key 递归脱敏、正文默认禁发、安全摘要和 opt-in 摘录。

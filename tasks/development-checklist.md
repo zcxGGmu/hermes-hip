@@ -702,6 +702,13 @@
 
 最新记录放在最上方。
 
+### 2026-06-15 - Milestone 3.1 入口交接更新
+
+- [x] 已将 `docs/development-status.md`、`README.md` 和 `tasks/todo.md` 更新到 Milestone 3.1 入口。
+- [x] 已确认当前最新功能阶段提交为 `175009d feat: 增加 Hermes 事件隐私清洗`。
+- [x] 当前下一步为 Milestone 3.1：Daemon health 与 client。
+- [x] 已确认任务 3.1 边界：只实现 daemon health/status 与 client health 查询，不实现 event ingress、队列、router、renderer、dispatcher、sink、hook bridge、install 或 release preflight。
+
 ### 2026-06-15 - Milestone 2.3 隐私与 payload 清洗
 
 - [x] 已在 `codex/milestone-1-cli` 分支执行本阶段；启动时工作树无未提交代码变更，最新提交为 `dae54b5 docs: 更新 Hermeship Milestone 2.3 交接状态`。
