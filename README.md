@@ -117,6 +117,22 @@ Default tests must be local and deterministic. They must not depend on:
 
 Live verification is separate from default test runs and will be recorded in `docs/live-verification.md` when implemented.
 
+## Development Quality Gates
+
+Before each stage commit, run the baseline Rust quality gate:
+
+```bash
+cargo fmt --all -- --check
+cargo clippy --all-targets -- -D warnings
+cargo test
+```
+
+`cargo fmt` is the formatting authority. Code should be committed only after it matches rustfmt output.
+
+`cargo clippy --all-targets -- -D warnings` is the lint gate for application code, tests, examples, and benches. New warnings should be fixed instead of allowed unless a later design document records a narrow exception.
+
+Default tests must stay deterministic and must not require external credentials, a real Hermes gateway, real Discord, real GitHub, real tmux, or non-local network state. Use local fixtures, fake sinks, fake HTTP servers, fake Hermes homes, and fake binaries for regression coverage.
+
 ## Development Status
 
 Current state:

@@ -12,7 +12,7 @@ const DISCORD_TOKEN_ENV_VAR: &str = "HERMESHIP_DISCORD_TOKEN";
 const DEFAULT_CHANNEL_ENV_VAR: &str = "HERMESHIP_DEFAULT_CHANNEL";
 const DRY_RUN_ENV_VAR: &str = "HERMESHIP_DRY_RUN";
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(default)]
 pub struct AppConfig {
     pub daemon: DaemonConfig,
@@ -21,19 +21,6 @@ pub struct AppConfig {
     pub privacy: PrivacyConfig,
     pub hermes: HermesConfig,
     pub routes: Vec<RouteRule>,
-}
-
-impl Default for AppConfig {
-    fn default() -> Self {
-        Self {
-            daemon: DaemonConfig::default(),
-            providers: ProvidersConfig::default(),
-            defaults: DefaultsConfig::default(),
-            privacy: PrivacyConfig::default(),
-            hermes: HermesConfig::default(),
-            routes: Vec::new(),
-        }
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -180,19 +167,14 @@ impl Default for RouteRule {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "kebab-case")]
 pub enum MessageFormat {
+    #[default]
     Compact,
     Inline,
     Alert,
     Raw,
-}
-
-impl Default for MessageFormat {
-    fn default() -> Self {
-        Self::Compact
-    }
 }
 
 impl MessageFormat {

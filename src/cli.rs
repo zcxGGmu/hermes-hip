@@ -230,7 +230,7 @@ mod tests {
             let args = split_fixture_command(line).unwrap_or_else(|error| {
                 panic!("public command fixture is invalid `{line}`: {error}")
             });
-            let argv = std::iter::once("hermeship".to_string()).chain(args.into_iter());
+            let argv = std::iter::once("hermeship".to_string()).chain(args);
             Cli::try_parse_from(argv).unwrap_or_else(|error| {
                 panic!("public command fixture failed to parse `{line}`: {error}")
             });

@@ -1,1 +1,26 @@
 /target/
+
+# Local editor and OS metadata
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Local logs and runtime diagnostics
+*.log
+*.pid
+/logs/
+
+# Local temporary files
+*.tmp
+*.temp
+*.bak
+/.tmp/
+/tmp/
+
+# Local test and coverage output
+/coverage/
+/test-output/
+/test-results/
+*.profraw
+tarpaulin-report.html

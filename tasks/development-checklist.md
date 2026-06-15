@@ -139,23 +139,23 @@
 
 ### 任务 1.3：质量门禁与仓库基础
 
-- [ ] 增加 `.gitignore`。
+- [x] 增加 `.gitignore`。
   - 包含：`target/`、临时日志、测试输出。
-- [ ] 增加 rustfmt/clippy 约束说明。
+- [x] 增加 rustfmt/clippy 约束说明。
   - 文件：`README.md` 或 `docs/development.md`
-- [ ] 增加测试 fixture 目录。
+- [x] 增加测试 fixture 目录。
   - 新建：`tests/fixtures/hermes/`
   - 新建：`tests/fixtures/privacy/`
   - 新建：`tests/fixtures/routes/`
   - 新建：`tests/fixtures/discord/`
   - 新建：`tests/fixtures/cli/`
   - 完成标准：fixture 不包含真实 token、cookie、prompt、完整对话或 provider request/response body。
-- [ ] 确认基础门禁通过。
+- [x] 确认基础门禁通过。
   - 命令：`cargo fmt --all -- --check`
   - 命令：`cargo clippy --all-targets -- -D warnings`
   - 命令：`cargo test`
-- [ ] 提交任务 1.3。
-  - commit：`chore: 增加 Rust 质量门禁`
+- [x] 提交任务 1.3。
+  - commit：`chore: 增加 Rust 质量门禁与仓库基础`
 
 ## Milestone 2：事件模型与兼容层
 
@@ -693,6 +693,17 @@
 ## 运行状态日志
 
 最新记录放在最上方。
+
+### 2026-06-15 - Milestone 1.3 质量门禁与仓库基础
+
+- [x] 已在 `codex/milestone-1-cli` 分支执行本阶段，启动时工作树干净；最新提交为 `267efba docs: 更新 Hermeship 最新开发状态`，最新功能阶段提交为 `50723af feat: 实现 hermeship 配置模型与 config CLI`。
+- [x] 已扩展 `.gitignore`：保留 `/target/`，新增本地编辑器临时文件、日志、临时目录、测试输出和覆盖率输出规则；未忽略源码、文档、fixture 或 `Cargo.lock`。
+- [x] 已在 `README.md` 新增 Development Quality Gates，明确阶段提交前运行 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`。
+- [x] 已新增 fixture 目录：`tests/fixtures/hermes/`、`tests/fixtures/privacy/`、`tests/fixtures/routes/`、`tests/fixtures/discord/`，并保留 `tests/fixtures/cli/`。
+- [x] 已新增 `tests/fixtures/README.md`，明确 fixture 只能使用合成脱敏样例，不得包含真实 Discord token、真实 Hermes gateway 数据、真实 GitHub/tmux 状态、cookie、secret、完整 prompt、完整对话或 provider request/response body。
+- [x] 首次运行 `cargo clippy --all-targets -- -D warnings` 发现既有 lint：`AppConfig`/`MessageFormat` 的手写 `Default` 可 derive，CLI fixture 测试 helper 存在多余 `.into_iter()`；已用最小代码改动修复。
+- [x] 已运行验证：`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test` 均通过。
+- [x] 提交状态：随本阶段提交 `chore: 增加 Rust 质量门禁与仓库基础` 一并完成。
 
 ### 2026-06-15 - 最新开发状态交接更新
 
