@@ -1,19 +1,17 @@
-# Task: Hermeship Development Plan
+# Task: Hermeship 文档中文化与分离
 
-- [x] Inspect the `hermeship` repository state.
-- [x] Review relevant `clawhip` event contracts and CLI surfaces.
-- [x] Review relevant Hermes hook, observer, and gateway documentation.
-- [x] Write a detailed Hermes adapter implementation plan under `docs/plans/`.
-- [x] Add engineering-practice details to the implementation plan.
-- [x] Add release, rollback, and CI verification detail to the plan.
-- [x] Generate the iterative development progress checklist.
-- [x] Verify the Markdown plan and git diff.
+- [x] 复习 `tasks/lessons.md`。
+- [x] 确认仓库状态与远程分支同步。
+- [x] 将方案文档改写为中文方案文档。
+- [x] 从方案文档中移除详细执行清单内容。
+- [x] 将开发进度清单改写为中文跟踪清单。
+- [x] 更新 lessons，记录方案与清单必须分离维护。
+- [x] 验证文档结构、行尾空白、diff 范围。
+- [x] 提交并推送本阶段变更。
 
 ## Review
 
-- Created `docs/plans/2026-06-15-hermeship-development-plan.md`.
-- Created `tasks/development-checklist.md` for future iterative development tracking.
-- Verified the plan structure includes context, architecture, event mapping, nine implementation tasks, security requirements, live verification, milestones, and final checklist.
-- Added engineering principles, config precedence, task dependency graph, failure matrix, test matrix, CI shape, and release/rollback strategy.
-- Checked file inventory and confirmed only `docs/` and `tasks/` are new in `hermeship`.
-- Checked for trailing whitespace; none found.
+- 方案文档已改为中文，保留目标、边界、架构、契约、安全、验证、发布和参考内容。
+- 开发进度清单已改为中文，保留全局完成定义、Milestone 0-6、任务项、状态日志、阻塞项和决策记录。
+- 已更新 `tasks/lessons.md`，记录方案文档和开发清单必须分离维护。
+- 验证文档结构、英文模板残留、行尾空白和 git diff 范围。
