@@ -1,6 +1,7 @@
 # Public commands promised by the Milestone 1.1 CLI contract.
 start
 status
+setup --default-channel ops --daemon-url http://127.0.0.1:25295 --discord-token-stdin
 send --channel ops --message "hello"
 emit hermes.agent.started --payload '{"session_id":"demo"}'
 explain hermes.agent.started --payload '{"session_id":"demo"}'
@@ -10,6 +11,6 @@ config verify
 hermes hook --provider gateway --payload '{"event":"agent:start"}'
 hermes install-hooks --scope global --force
 hermes uninstall-hooks --home /tmp/hermeship-test-home --dry-run
-install
-uninstall
+install --dry-run
+uninstall --remove-config --remove-state --remove-hooks --hermes-home /tmp/hermeship-test-home --dry-run
 release preflight 0.1.0

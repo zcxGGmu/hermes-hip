@@ -1,0 +1,13 @@
+[Unit]
+Description=Hermeship notification daemon
+After=network-online.target
+
+[Service]
+Type=simple
+Environment=HERMESHIP_CONFIG=%h/.hermeship/config.toml
+ExecStart=%h/.cargo/bin/hermeship start
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

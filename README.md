@@ -2,7 +2,7 @@
 
 Hermeship is a Hermes-native event-to-channel notification router. It keeps notification delivery outside Hermes gateway sessions so lifecycle events can reach Discord, Slack, webhooks, or other sinks without polluting the agent conversation context.
 
-The project has completed Milestone 5.3. The Rust CLI skeleton, configuration model, repository quality gates, event model, privacy sanitization, daemon HTTP ingress, Hermes hook ingress, router, renderer, dispatcher, fake sink, Discord sink, sink failure handling, and local daemon-to-fake-sink smoke coverage are implemented. Hermes hook bridge installation, install/uninstall lifecycle, release preflight, live verification, Slack sink, and Hermes plugin/observer work are still pending.
+The project has completed Milestone 7. The Rust CLI skeleton, configuration model, repository quality gates, event model, privacy sanitization, daemon HTTP ingress, Hermes hook ingress, router, renderer, dispatcher, fake sink, Discord sink, sink failure handling, local daemon-to-fake-sink smoke coverage, Hermes hook bridge installation, local lifecycle CLI, and release preflight are implemented. Live verification, Slack sink, and Hermes plugin/observer work are still pending.
 
 ## Project Direction
 
@@ -105,6 +105,20 @@ hermeship uninstall
 hermeship release preflight <version>
 ```
 
+## Operations
+
+Local install and rollback commands are deterministic and file-system scoped:
+
+```bash
+hermeship install
+hermeship setup --default-channel <channel-id> --discord-token-stdin
+hermeship hermes install-hooks --scope global --force
+hermeship uninstall --remove-state --remove-config --remove-hooks --hermes-home ~/.hermes
+hermeship release preflight 0.1.0
+```
+
+`hermeship setup --discord-token-stdin` writes the token to local config without putting it in shell history or process argv, and redacts it from command output. Service manager integration is currently template-only: see `deploy/hermeship.service` and `docs/operations.md`.
+
 ## Verification Policy
 
 Default tests must be local and deterministic. They must not depend on:
@@ -140,13 +154,13 @@ Current state:
 - Architecture and test strategy are documented in `docs/plans/2026-06-15-hermeship-development-plan.md`.
 - Execution progress is tracked in `tasks/development-checklist.md`.
 - Session handoff status is tracked in `docs/development-status.md`.
-- Milestone 0 through Milestone 5.3 are complete and committed.
+- Milestone 0 through Milestone 7 are complete.
 - Milestone 1 completed the Rust project skeleton, CLI command tree, configuration model, repository quality gates, and fixture baseline.
 - Milestone 2 completed `IncomingEvent`, typed `EventEnvelope`, Hermes canonical mapping, and privacy sanitization.
 - Milestone 3 completed daemon `/health`, `/event`, `/api/hermes/hook`, bounded queue ingress, and daemon client POST paths.
 - Milestone 4 completed router, default renderer, dispatcher, fake sink, and queue consumer wiring.
 - Milestone 5 completed Discord sink payload/request handling, sink failure semantics, and deterministic local daemon-to-fake-sink smoke coverage.
+- Milestone 6 completed Hermes gateway hook bridge templates, install/uninstall, safe marker-based rollback, and fail-open handler smoke coverage.
+- Milestone 7 completed local install/setup/uninstall lifecycle CLI, service template documentation, and local release preflight.
 
-Latest completed implementation commit: `026e80c test: 增加 daemon 到 sink 的端到端覆盖`.
-
-Next implementation phase is Milestone 6: Hermes Hook Bridge installation. It should add local hook templates, installer/uninstaller behavior, fake Hermes home tests, fake hermeship binary smoke coverage, and fail-open Python handler checks while keeping release preflight, live verification, Slack sink, and Hermes plugin/observer work out of scope.
+Next implementation phase is Milestone 8: clawhip parity extensions. Keep live verification, Slack sink, and Hermes plugin/observer out of Milestone 8 unless the checklist is explicitly updated.

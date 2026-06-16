@@ -9,6 +9,7 @@ use hermeship::daemon::{EventAcceptedResponse, HealthResponse};
 use hermeship::events::IncomingEvent;
 use hermeship::hermes::HermesHookEnvelope;
 use hermeship::hooks::{HookInstallOptions, HookInstallReport, HookUninstallReport};
+use hermeship::lifecycle::{InstallOptions, SetupOptions, UninstallOptions};
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -22,6 +23,7 @@ async fn main() {
 
 async fn real_main() -> Result<()> {
     let cli = Cli::parse();
+    let config_was_overridden = cli.config.is_some();
     let config_path = cli.config_path();
 
     match cli.command.unwrap_or(Commands::Start { port: None }) {
@@ -60,7 +62,7 @@ async fn real_main() -> Result<()> {
         Commands::Config { command } => match command.unwrap_or(ConfigCommand::Show) {
             ConfigCommand::Show => {
                 let config = AppConfig::load_or_default(&config_path)?;
-                println!("{}", config.to_pretty_toml()?);
+                println!("{}", config.to_redacted_pretty_toml()?);
                 Ok(())
             }
             ConfigCommand::Path => {
@@ -74,6 +76,18 @@ async fn real_main() -> Result<()> {
                 Ok(())
             }
         },
+        Commands::Setup(args) => {
+            let discord_token = read_setup_token(&args, io::stdin().lock())?;
+            let report = hermeship::lifecycle::setup(&SetupOptions {
+                config_path,
+                discord_token,
+                default_channel: args.default_channel,
+                daemon_url: args.daemon_url,
+                dry_run: args.dry_run,
+            })?;
+            print!("{}", report.render());
+            Ok(())
+        }
         Commands::Hermes { command } => match command {
             HermesCommands::Hook(args) => {
                 let config = AppConfig::load_or_default(&config_path)?;
@@ -111,19 +125,97 @@ async fn real_main() -> Result<()> {
                 Ok(())
             }
         },
-        Commands::Install => print_placeholder("install", ()),
-        Commands::Uninstall => print_placeholder("uninstall", ()),
+        Commands::Install(args) => {
+            let home = args.home.unwrap_or_else(hermeship::lifecycle::default_home);
+            let config_path = lifecycle_config_path(config_path, config_was_overridden, &home);
+            let report = hermeship::lifecycle::install(&InstallOptions {
+                home,
+                config_path,
+                force: args.force,
+                dry_run: args.dry_run,
+            })?;
+            print!("{}", report.render());
+            Ok(())
+        }
+        Commands::Uninstall(args) => {
+            let home = args.home.unwrap_or_else(hermeship::lifecycle::default_home);
+            let config_path = lifecycle_config_path(config_path, config_was_overridden, &home);
+            let hermes_home = if args.remove_hooks {
+                Some(
+                    args.hermes_home
+                        .unwrap_or_else(hermeship::hooks::default_hermes_home),
+                )
+            } else {
+                args.hermes_home
+            };
+            let report = hermeship::lifecycle::uninstall(&UninstallOptions {
+                home,
+                config_path,
+                hermes_home,
+                remove_config: args.remove_config,
+                remove_state: args.remove_state,
+                remove_hooks: args.remove_hooks,
+                dry_run: args.dry_run,
+            })?;
+            print!("{}", report.render());
+            Ok(())
+        }
         Commands::Release { command } => match command {
             ReleaseCommands::Preflight { version } => {
-                print_placeholder("release preflight", version)
+                let repo_root = std::env::current_dir().context("failed to resolve current dir")?;
+                let report = hermeship::release_preflight::run_preflight(&repo_root, &version)?;
+                print!("{}", report.render());
+                if report.ok() {
+                    Ok(())
+                } else {
+                    anyhow::bail!("release preflight failed")
+                }
             }
         },
     }
 }
 
-fn print_placeholder(name: &str, _args: impl std::fmt::Debug) -> Result<()> {
-    println!("{name} command parsed; implementation will arrive in a later milestone");
-    Ok(())
+fn lifecycle_config_path(
+    default_path: std::path::PathBuf,
+    was_overridden: bool,
+    home: &std::path::Path,
+) -> std::path::PathBuf {
+    if was_overridden {
+        default_path
+    } else {
+        home.join("config.toml")
+    }
+}
+
+fn read_setup_token(args: &hermeship::cli::SetupArgs, stdin: impl Read) -> Result<Option<String>> {
+    match (args.discord_token_stdin, args.discord_token_env.as_ref()) {
+        (true, Some(_)) => {
+            anyhow::bail!("use only one of --discord-token-stdin or --discord-token-env")
+        }
+        (true, None) => read_secret_stdin(stdin).map(Some),
+        (false, Some(name)) => {
+            let value = std::env::var(name)
+                .with_context(|| format!("environment variable {name} is not set"))?;
+            let token = value.trim();
+            if token.is_empty() {
+                anyhow::bail!("environment variable {name} is empty");
+            }
+            Ok(Some(token.to_string()))
+        }
+        (false, None) => Ok(None),
+    }
+}
+
+fn read_secret_stdin(mut stdin: impl Read) -> Result<String> {
+    let mut buffer = String::new();
+    stdin
+        .read_to_string(&mut buffer)
+        .context("failed to read Discord token from stdin")?;
+    let token = buffer.trim();
+    if token.is_empty() {
+        anyhow::bail!("--discord-token-stdin received empty stdin");
+    }
+    Ok(token.to_string())
 }
 
 fn ensure_global_hermes_hook_scope(scope: &str) -> Result<()> {
@@ -256,7 +348,10 @@ mod tests {
     use hermeship::events::IncomingEvent;
     use hermeship::hermes::HermesHookEnvelope;
 
-    use super::{VERSION, explain_event, read_payload_arg, submit_event, submit_hermes_hook};
+    use super::{
+        VERSION, explain_event, read_payload_arg, read_setup_token, submit_event,
+        submit_hermes_hook,
+    };
 
     #[tokio::test]
     async fn daemon_emit_command_posts_event_to_daemon() {
@@ -367,6 +462,48 @@ mod tests {
         .unwrap();
 
         assert_eq!(payload, r#"{"event":"agent:start"}"#);
+    }
+
+    #[test]
+    fn setup_token_stdin_reads_secret_without_cli_arg() {
+        let args = hermeship::cli::SetupArgs {
+            discord_token_stdin: true,
+            discord_token_env: None,
+            default_channel: None,
+            daemon_url: None,
+            dry_run: false,
+        };
+
+        let token = read_setup_token(&args, b"synthetic-token\n".as_slice()).unwrap();
+
+        assert_eq!(token.as_deref(), Some("synthetic-token"));
+    }
+
+    #[test]
+    fn setup_token_rejects_empty_stdin_and_conflicting_sources() {
+        let empty = hermeship::cli::SetupArgs {
+            discord_token_stdin: true,
+            discord_token_env: None,
+            default_channel: None,
+            daemon_url: None,
+            dry_run: false,
+        };
+        let error = read_setup_token(&empty, b"   \n".as_slice())
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("empty stdin"), "{error}");
+
+        let conflicting = hermeship::cli::SetupArgs {
+            discord_token_stdin: true,
+            discord_token_env: Some("HERMESHIP_SETUP_DISCORD_TOKEN".to_string()),
+            default_channel: None,
+            daemon_url: None,
+            dry_run: false,
+        };
+        let error = read_setup_token(&conflicting, b"synthetic-token".as_slice())
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("use only one"), "{error}");
     }
 
     #[test]

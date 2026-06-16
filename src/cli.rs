@@ -41,6 +41,8 @@ pub enum Commands {
     },
     /// Check daemon health/status.
     Status,
+    /// Scaffold common setup values into the Hermeship config.
+    Setup(SetupArgs),
     /// Send a custom message event to the daemon.
     Send {
         /// Override the delivery channel.
@@ -65,9 +67,9 @@ pub enum Commands {
         command: HermesCommands,
     },
     /// Install hermeship local files and service scaffolding.
-    Install,
+    Install(InstallArgs),
     /// Uninstall hermeship local files and service scaffolding.
-    Uninstall,
+    Uninstall(UninstallArgs),
     /// Release consistency checks.
     Release {
         #[command(subcommand)]
@@ -219,6 +221,60 @@ pub struct UninstallHooksArgs {
     pub dry_run: bool,
 }
 
+#[derive(Debug, Clone, Args)]
+pub struct SetupArgs {
+    /// Read the Discord bot token from stdin.
+    #[arg(long)]
+    pub discord_token_stdin: bool,
+    /// Read the Discord bot token from this environment variable.
+    #[arg(long)]
+    pub discord_token_env: Option<String>,
+    /// Set the default delivery channel in [defaults].
+    #[arg(long)]
+    pub default_channel: Option<String>,
+    /// Set daemon.base_url.
+    #[arg(long)]
+    pub daemon_url: Option<String>,
+    /// Print planned setup changes without writing config.
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
+}
+
+#[derive(Debug, Clone, Args)]
+pub struct InstallArgs {
+    /// Hermeship home directory. Defaults to ~/.hermeship.
+    #[arg(long)]
+    pub home: Option<PathBuf>,
+    /// Replace an existing generated config scaffold.
+    #[arg(long, default_value_t = false)]
+    pub force: bool,
+    /// Print files that would be created without changing disk.
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
+}
+
+#[derive(Debug, Clone, Args)]
+pub struct UninstallArgs {
+    /// Hermeship home directory. Defaults to ~/.hermeship.
+    #[arg(long)]
+    pub home: Option<PathBuf>,
+    /// Hermes home directory for safe Hermes hook removal.
+    #[arg(long)]
+    pub hermes_home: Option<PathBuf>,
+    /// Remove Hermeship config.toml.
+    #[arg(long, default_value_t = false)]
+    pub remove_config: bool,
+    /// Remove Hermeship state and logs directories.
+    #[arg(long, default_value_t = false)]
+    pub remove_state: bool,
+    /// Remove Hermeship-managed Hermes gateway hooks.
+    #[arg(long, default_value_t = false)]
+    pub remove_hooks: bool,
+    /// Print files that would be removed without changing disk.
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
+}
+
 #[derive(Debug, Clone, Subcommand)]
 pub enum ReleaseCommands {
     /// Run release consistency checks.
@@ -257,6 +313,81 @@ mod tests {
             }
             other => panic!("expected send command, got {other:?}"),
         }
+    }
+
+    #[test]
+    fn parses_setup_install_and_uninstall_commands() {
+        let setup = Cli::parse_from([
+            "hermeship",
+            "setup",
+            "--discord-token-stdin",
+            "--default-channel",
+            "ops",
+            "--daemon-url",
+            "http://127.0.0.1:25296",
+            "--dry-run",
+        ]);
+        assert!(matches!(
+            setup.command,
+            Some(Commands::Setup(args))
+                if args.discord_token_stdin
+                    && args.discord_token_env.is_none()
+                    && args.default_channel.as_deref() == Some("ops")
+                    && args.daemon_url.as_deref() == Some("http://127.0.0.1:25296")
+                    && args.dry_run
+        ));
+
+        let install = Cli::parse_from([
+            "hermeship",
+            "install",
+            "--home",
+            "/tmp/hermeship-home",
+            "--force",
+            "--dry-run",
+        ]);
+        assert!(matches!(
+            install.command,
+            Some(Commands::Install(args))
+                if args.home == Some(PathBuf::from("/tmp/hermeship-home"))
+                    && args.force
+                    && args.dry_run
+        ));
+
+        let uninstall = Cli::parse_from([
+            "hermeship",
+            "uninstall",
+            "--home",
+            "/tmp/hermeship-home",
+            "--hermes-home",
+            "/tmp/hermes-home",
+            "--remove-config",
+            "--remove-state",
+            "--remove-hooks",
+            "--dry-run",
+        ]);
+        assert!(matches!(
+            uninstall.command,
+            Some(Commands::Uninstall(args))
+                if args.home == Some(PathBuf::from("/tmp/hermeship-home"))
+                    && args.hermes_home == Some(PathBuf::from("/tmp/hermes-home"))
+                    && args.remove_config
+                    && args.remove_state
+                    && args.remove_hooks
+                    && args.dry_run
+        ));
+    }
+
+    #[test]
+    fn rejects_plaintext_discord_token_arg() {
+        let error =
+            Cli::try_parse_from(["hermeship", "setup", "--discord-token", "synthetic-token"])
+                .unwrap_err()
+                .to_string();
+
+        assert!(
+            error.contains("unexpected argument '--discord-token'"),
+            "{error}"
+        );
     }
 
     #[test]
@@ -470,6 +601,7 @@ mod tests {
         for expected in [
             "start",
             "status",
+            "setup ",
             "send ",
             "emit ",
             "explain ",

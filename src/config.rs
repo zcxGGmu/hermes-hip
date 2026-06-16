@@ -246,6 +246,14 @@ impl AppConfig {
         Ok(toml::to_string_pretty(self)?)
     }
 
+    pub fn to_redacted_pretty_toml(&self) -> Result<String> {
+        let mut redacted = self.clone();
+        if redacted.providers.discord.token.is_some() {
+            redacted.providers.discord.token = Some("<redacted>".to_string());
+        }
+        Ok(toml::to_string_pretty(&redacted)?)
+    }
+
     pub fn validate(&self) -> Result<()> {
         if self.daemon.host.trim().is_empty() {
             anyhow::bail!("daemon.host must not be empty");
@@ -649,6 +657,24 @@ future_field = "ignored"
         assert!(rendered.contains("port = 25295"));
         assert!(rendered.contains("[privacy]"));
         assert!(rendered.contains("format = \"compact\""));
+    }
+
+    #[test]
+    fn config_show_can_redact_discord_token() {
+        let config = AppConfig {
+            providers: ProvidersConfig {
+                discord: DiscordConfig {
+                    token: Some("synthetic-token".to_string()),
+                    default_channel: None,
+                },
+            },
+            ..AppConfig::default()
+        };
+
+        let rendered = config.to_redacted_pretty_toml().unwrap();
+
+        assert!(rendered.contains("<redacted>"));
+        assert!(!rendered.contains("synthetic-token"));
     }
 
     fn temp_config_path(label: &str) -> PathBuf {

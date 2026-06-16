@@ -524,52 +524,55 @@
 
 ### 任务 7.1：Install/Setup
 
-- [ ] 实现 `hermeship install`。
+- [x] 实现 `hermeship install`。
   - 创建 `~/.hermeship`。
   - scaffold `config.toml`。
   - 输出下一步命令。
-- [ ] 实现 `hermeship setup`。
+- [x] 实现 `hermeship setup`。
   - 支持设置 Discord token、default channel、daemon URL。
   - 不打印 secret。
-- [ ] 编写 install/setup 测试。
+- [x] 编写 install/setup 测试。
   - 使用临时 HOME。
-- [ ] 验证任务 7.1。
+- [x] 验证任务 7.1。
   - 命令：`cargo test lifecycle`
-- [ ] 提交任务 7.1。
+- [x] 提交任务 7.1。
   - commit：`feat: 增加 hermeship install setup`
+  - 记录：本阶段合并为 Milestone 7 统一提交。
 
 ### 任务 7.2：Service 与 Uninstall
 
-- [ ] 增加 systemd service 模板。
+- [x] 增加 systemd service 模板。
   - 新建：`deploy/hermeship.service`
-- [ ] 增加 launchd 文档或模板。
+- [x] 增加 launchd 文档或模板。
   - macOS 先文档化，是否实现视环境决定。
-- [ ] 实现 `hermeship uninstall`。
+- [x] 实现 `hermeship uninstall`。
   - 可选删除 config/state/service/hooks。
-- [ ] 编写 lifecycle 测试。
+- [x] 编写 lifecycle 测试。
   - 覆盖：不误删、force/remove-config 行为。
-- [ ] 验证任务 7.2。
+- [x] 验证任务 7.2。
   - 命令：`cargo test lifecycle`
-- [ ] 提交任务 7.2。
+- [x] 提交任务 7.2。
   - commit：`feat: 增加安装生命周期管理`
+  - 记录：本阶段合并为 Milestone 7 统一提交。
 
 ### 任务 7.3：Release preflight
 
-- [ ] 新建 release preflight。
+- [x] 新建 release preflight。
   - 新建：`src/release_preflight.rs`
-- [ ] 检查项目一致性。
+- [x] 检查项目一致性。
   - CLI help。
   - 配置示例。
   - docs 命令。
   - hook 模板包含。
   - 测试夹具完整性。
   - live verification 必填字段。
-- [ ] 实现 CLI。
+- [x] 实现 CLI。
   - `hermeship release preflight <version>`
-- [ ] 验证任务 7.3。
+- [x] 验证任务 7.3。
   - 命令：`cargo run -- release preflight 0.1.0`
-- [ ] 提交任务 7.3。
+- [x] 提交任务 7.3。
   - commit：`chore: 增加 release preflight`
+  - 记录：本阶段合并为 Milestone 7 统一提交。
 
 ## Milestone 8：clawhip 功能 Parity 扩展
 
@@ -725,6 +728,22 @@
 ## 运行状态日志
 
 最新记录放在最上方。
+
+### 2026-06-16 - Milestone 7 安装、生命周期与运维 CLI
+
+- [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
+- [x] 已确认启动时工作树干净，最近提交为 `64e8641 docs: 更新 Hermeship 最新开发状态`、`f6f98a3 feat: 支持 Hermes hook bridge 安装`、`1ad3c7c docs: 更新 Hermeship Milestone 6 开发入口`。
+- [x] 已阅读 `src/cli.rs`、`src/main.rs`、`src/hooks.rs`、`src/config.rs`、`src/daemon.rs`、`src/client.rs`、`tests/fixtures/README.md`、方案文档安装/回滚章节，并参考 `template/clawhip` lifecycle/preflight 模式。
+- [x] 已先写失败测试并运行 Red：`cargo test lifecycle` 在实现前失败于缺少 `InstallOptions`、`SetupOptions`、`UninstallOptions`、`install/setup/uninstall` 和 `SERVICE_TEMPLATE`；`cargo test release_preflight` 在实现前失败于缺少 preflight API。
+- [x] 已新增 `src/lifecycle.rs`，实现本地 deterministic `install`、`setup`、`uninstall`，支持 dry-run、force、显式删除开关、stdin/env token 输入和 token 输出脱敏。
+- [x] 已新增 `deploy/hermeship.service` 和 `docs/operations.md`，记录 systemd user service 模板与 launchd 手动示例；本阶段不执行真实 service manager 操作。
+- [x] 已新增 `src/release_preflight.rs`，覆盖 Cargo 版本一致性、公开 CLI fixture、文档命令、hook 模板、fixture policy、service 模板和 live verification pending 语义。
+- [x] 已接入 CLI：`hermeship setup`、`hermeship install --home --force --dry-run`、`hermeship uninstall --home --hermes-home --remove-config --remove-state --remove-hooks --dry-run`、`hermeship release preflight <version>`。
+- [x] 已完成本地 deterministic CLI smoke：`install --dry-run`、临时目录 `install`、`setup` 脱敏输出、`uninstall --dry-run`、`release preflight 0.1.0`。
+- [x] 已根据代码审查修复安全边界：`setup` 不再接受明文 token argv，改用 stdin/env；`config show` 默认脱敏；写配置时使用私有权限；`install` 写入 home marker；destructive `uninstall` 必须验证 marker；`--remove-hooks` 默认使用 Hermes home；release preflight 纳入 `docs/operations.md`。
+- [x] 已运行验证：`cargo test lifecycle`（10 passed）、`cargo test release_preflight`（6 passed）、`cargo test cli`（17 passed）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（139 lib tests + 8 bin tests passed）均通过。
+- [x] 已确认本阶段没有实现真实 live verification、Slack sink、Hermes plugin/observer、真实 systemd/launchd 安装或外部网络发布自动化。
+- [x] 提交状态：已提交 `4fe5c14 feat: 增加安装生命周期与发布预检`。
 
 ### 2026-06-16 - Milestone 6 完成后交接更新
 
