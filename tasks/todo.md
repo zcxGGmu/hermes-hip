@@ -1,6 +1,6 @@
 # Task: Milestone 5.2 - Sink 失败语义
 
-更新时间：2026-06-16 Milestone 5.2 待执行
+更新时间：2026-06-16 Milestone 5.2 已实现并验证
 
 本阶段目标：在已完成 Discord sink payload、bot channel、webhook、allowed mentions 和 daemon sink registry 的基础上，完善 sink 失败语义。重点覆盖 Discord token/channel 缺失、非 2xx、429 rate limit、fake HTTP 失败矩阵，以及多个 delivery 中一个失败时其他 delivery 继续。
 
@@ -34,9 +34,9 @@
 - [x] Milestone 4.3：Dispatcher 与 fake sink。
 - [x] Milestone 5.1：Discord 配置与 payload。
 
-## 当前待执行
+## 当前阶段
 
-- [ ] Milestone 5.2：Sink 失败语义。
+- [x] Milestone 5.2：Sink 失败语义。
 
 ## 后续未完成
 
@@ -49,19 +49,19 @@
 
 ## 执行计划
 
-- [ ] 复习项目规则与状态入口。
+- [x] 复习项目规则与状态入口。
   - 阅读：`tasks/lessons.md`
   - 阅读：`docs/development-status.md`
   - 阅读：`docs/plans/2026-06-15-hermeship-development-plan.md`
   - 阅读：`tasks/development-checklist.md`
   - 阅读：`tasks/todo.md`
 
-- [ ] 确认当前分支、最新提交和未提交变更。
+- [x] 确认当前分支、最新提交和未提交变更。
   - 命令：`git status --short --branch`
   - 命令：`git log -3 --oneline`
   - 预期：当前分支为 `codex/milestone-1-cli`；最新功能阶段提交为 `0cd6e4e feat: 增加 Discord sink`；启动时不要混入无关改动。
 
-- [ ] 检查现有代码边界。
+- [x] 检查现有代码边界。
   - 查看：`src/sink/discord.rs`
   - 查看：`src/sink/mod.rs`
   - 查看：`src/sink/fake.rs`
@@ -73,7 +73,7 @@
   - 必要时参考：`/Users/zq/Desktop/ai-projs/posp/template/clawhip/src/discord.rs`
   - 完成标准：确认本阶段只实现 Discord sink 失败语义，不进入 hook bridge install、release preflight、真实 live verification 或 Slack sink。
 
-- [ ] 先写失败测试。
+- [x] 先写失败测试。
   - 修改：`src/sink/discord.rs`
   - 必要时修改：`src/dispatch.rs`
   - 覆盖：token 缺失通过 dispatcher 报告 `SinkFailed`，不 panic。
@@ -85,38 +85,45 @@
   - 命令：`cargo test dispatch`
   - 预期：实现前测试失败于当前 sink 失败语义不足。
 
-- [ ] 实现 Discord 非 2xx 失败诊断。
+- [x] 实现 Discord 非 2xx 失败诊断。
   - 修改：`src/sink/discord.rs`
   - 行为：HTTP 非 2xx 返回 `anyhow::Error`，包含 status 和截断后的 body tail。
   - 完成标准：错误信息可诊断但不泄露 webhook URL 或 token。
 
-- [ ] 实现 Discord 429 rate limit 语义。
+- [x] 实现 Discord 429 rate limit 语义。
   - 修改：`src/sink/discord.rs`
   - 行为：解析 Discord JSON body 中的 `retry_after`；本阶段可选择确定性短重试或明确记录 retry-after 诊断，但必须测试锁定行为。
   - 完成标准：429 行为不依赖 sleep 猜测，不访问真实 Discord。
 
-- [ ] 完善 dispatcher 多 delivery 失败覆盖。
+- [x] 完善 dispatcher 多 delivery 失败覆盖。
   - 修改：`src/dispatch.rs`
   - 行为：一个 Discord delivery 失败后，后续 delivery 仍继续；report 中可观察成功与失败。
 
-- [ ] 运行任务 5.2 验证命令。
+- [x] 运行任务 5.2 验证命令。
   - `cargo test sink`
   - `cargo test dispatch`
   - `cargo fmt --all -- --check`
   - `cargo clippy --all-targets -- -D warnings`
   - `cargo test`
 
-- [ ] 更新开发状态文档。
+- [x] 更新开发状态文档。
   - 更新：`tasks/development-checklist.md`
   - 更新：`tasks/todo.md`
   - 必要时更新：`docs/development-status.md`
   - 完成标准：记录实现、验证、边界和剩余风险。
 
-- [ ] 提交任务 5.2。
+- [x] 提交任务 5.2。
   - commit：`feat: 完善 sink 失败处理`
   - commit 信息使用中文，说明变更、验证和影响。
 
 ## Review
 
-- 待任务 5.2 实施、验证和提交后填写。
-- 上一阶段 Milestone 5.1 已完成并提交：`0cd6e4e feat: 增加 Discord sink`。
+- 已完成 Milestone 5.2：Discord sink 失败语义。
+- 已先写失败测试并确认 Red：`cargo test sink -- --nocapture` 在实现前失败于非 2xx body tail 和 429 retry-after 诊断。
+- 已实现非 2xx 错误诊断：错误包含 HTTP status 和受控 body tail，不输出 webhook URL、Authorization header 或 bot token。
+- 已实现 429 rate limit 诊断：解析 JSON `retry_after` 并输出 `retry_after=<seconds>s`；缺失或非法时输出 `retry_after=unknown`。本阶段不引入 sleep/retry 状态机、DLQ 或 circuit breaker。
+- 已覆盖 token 缺失经 dispatcher 报告 `SinkFailed`、空 channel/request builder 错误、fake HTTP 500、fake HTTP 429、429 fallback 和多 delivery 中一个失败时其他继续。
+- 已采纳代码审查建议：fake HTTP server await 增加 2 秒超时，避免未来请求未发出时测试挂住。
+- 已运行验证：`cargo test sink`（23 passed）、`cargo test dispatch`（11 passed）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（102 lib tests + 6 bin tests passed）。
+- 已确认本阶段未实现 Hermes hook bridge install、install/uninstall lifecycle、release preflight、真实 live verification 或 Slack sink。
+- 下一阶段入口：Milestone 5.3 本地端到端 smoke。

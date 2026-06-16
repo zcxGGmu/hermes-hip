@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use anyhow::{Context, Result};
 use reqwest::header::{AUTHORIZATION, HeaderValue};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::config::AppConfig;
 use crate::router::SinkTarget;
@@ -93,10 +93,7 @@ impl DiscordSink {
         }
 
         let body = response.text().await.unwrap_or_default();
-        anyhow::bail!(
-            "Discord request failed with HTTP {status}: {}",
-            body_tail(&body)
-        );
+        anyhow::bail!(discord_http_error(status, &body));
     }
 
     #[cfg(test)]
@@ -146,6 +143,11 @@ struct DiscordAllowedMentions {
     users: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     roles: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DiscordRateLimitBody {
+    retry_after: Option<f64>,
 }
 
 impl DiscordAllowedMentions {
@@ -237,14 +239,47 @@ fn webhook_url_with_wait(webhook_url: &str) -> Result<String> {
     Ok(url.to_string())
 }
 
+fn discord_http_error(status: reqwest::StatusCode, body: &str) -> String {
+    if status.as_u16() == 429 {
+        if let Some(retry_after) = parse_retry_after(body) {
+            return format!(
+                "Discord rate limited with HTTP {status}; retry_after={}s; body tail: {}",
+                format_retry_after(retry_after),
+                body_tail(body)
+            );
+        }
+
+        return format!(
+            "Discord rate limited with HTTP {status}; retry_after=unknown; body tail: {}",
+            body_tail(body)
+        );
+    }
+
+    format!(
+        "Discord request failed with HTTP {status}: {}",
+        body_tail(body)
+    )
+}
+
+fn parse_retry_after(body: &str) -> Option<f64> {
+    let parsed: DiscordRateLimitBody = serde_json::from_str(body).ok()?;
+    let retry_after = parsed.retry_after?;
+    retry_after.is_finite().then_some(retry_after)
+}
+
+fn format_retry_after(retry_after: f64) -> String {
+    retry_after.to_string()
+}
+
 fn body_tail(body: &str) -> String {
     const MAX_BODY_CHARS: usize = 512;
     let body = body.trim();
-    if body.chars().count() <= MAX_BODY_CHARS {
+    let char_count = body.chars().count();
+    if char_count <= MAX_BODY_CHARS {
         return body.to_string();
     }
 
-    body.chars().take(MAX_BODY_CHARS).collect()
+    body.chars().skip(char_count - MAX_BODY_CHARS).collect()
 }
 
 fn normalize_text(value: Option<String>) -> Option<String> {
@@ -259,7 +294,14 @@ mod tests {
     use serde_json::json;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-    use crate::config::MessageFormat;
+    use std::collections::HashMap;
+    use std::sync::Arc;
+
+    use crate::config::{AppConfig, MessageFormat, RouteRule};
+    use crate::dispatch::{DeliveryStatus, Dispatcher};
+    use crate::event::{EventEnvelope, compat::from_incoming_event};
+    use crate::events::IncomingEvent;
+    use crate::render::DefaultRenderer;
     use crate::router::SinkTarget;
     use crate::sink::{Sink, SinkMessage};
 
@@ -446,7 +488,7 @@ mod tests {
         )
         .await
         .unwrap();
-        let request = server.await.unwrap();
+        let request = wait_for_request(server).await;
 
         assert!(
             request.starts_with("POST /webhook?wait=true HTTP/1.1"),
@@ -454,6 +496,194 @@ mod tests {
         );
         assert!(request.contains(r#""content":"<@123> hermes agent started""#));
         assert!(request.contains(r#""allowed_mentions":{"parse":[],"users":["123"]}"#));
+    }
+
+    #[tokio::test]
+    async fn sink_reports_non_2xx_status_and_body_tail() {
+        let long_body = format!("{}diagnostic-tail", "x".repeat(700));
+        let (webhook_url, server) =
+            spawn_response_server("500 Internal Server Error", &long_body).await;
+        let sink = DiscordSink::for_tests(None, "http://discord.test/api");
+        let message = message("hermes agent failed", None);
+
+        let error = sink
+            .send(&SinkTarget::DiscordWebhook(webhook_url), &message)
+            .await
+            .unwrap_err()
+            .to_string();
+        let request = wait_for_request(server).await;
+
+        assert!(request.starts_with("POST /webhook?wait=true HTTP/1.1"));
+        assert!(error.contains("HTTP 500 Internal Server Error"), "{error}");
+        assert!(error.contains("diagnostic-tail"), "{error}");
+        assert!(
+            !error.contains(&"x".repeat(600)),
+            "error should include a bounded body tail: {error}"
+        );
+    }
+
+    #[tokio::test]
+    async fn sink_reports_rate_limit_retry_after_from_429_body() {
+        let (webhook_url, server) = spawn_response_server(
+            "429 Too Many Requests",
+            r#"{"message":"You are being rate limited.","retry_after":1.25,"global":false}"#,
+        )
+        .await;
+        let sink = DiscordSink::for_tests(None, "http://discord.test/api");
+        let message = message("hermes agent rate limited", None);
+
+        let error = sink
+            .send(&SinkTarget::DiscordWebhook(webhook_url), &message)
+            .await
+            .unwrap_err()
+            .to_string();
+        let _request = wait_for_request(server).await;
+
+        assert!(error.contains("Discord rate limited"), "{error}");
+        assert!(error.contains("HTTP 429 Too Many Requests"), "{error}");
+        assert!(error.contains("retry_after=1.25s"), "{error}");
+    }
+
+    #[tokio::test]
+    async fn sink_reports_rate_limit_unknown_when_retry_after_is_missing() {
+        let (webhook_url, server) =
+            spawn_response_server("429 Too Many Requests", r#"{"message":"rate limited"}"#).await;
+        let sink = DiscordSink::for_tests(None, "http://discord.test/api");
+        let message = message("hermes agent rate limited", None);
+
+        let error = sink
+            .send(&SinkTarget::DiscordWebhook(webhook_url), &message)
+            .await
+            .unwrap_err()
+            .to_string();
+        let _request = wait_for_request(server).await;
+
+        assert!(error.contains("Discord rate limited"), "{error}");
+        assert!(error.contains("HTTP 429 Too Many Requests"), "{error}");
+        assert!(error.contains("retry_after=unknown"), "{error}");
+    }
+
+    #[tokio::test]
+    async fn dispatcher_reports_missing_discord_token_as_sink_failure() {
+        let config = config_with_routes(vec![RouteRule {
+            event: "hermes.agent.*".to_string(),
+            channel: Some("ops".to_string()),
+            ..RouteRule::default()
+        }]);
+        let event = envelope("hermes.agent.started");
+        let sink = DiscordSink::for_tests(None, "http://discord.test/api");
+        let dispatcher = dispatcher(config, sink);
+
+        let report = dispatcher.dispatch_event(&event).await;
+
+        assert_eq!(report.resolved_deliveries, 1);
+        assert_eq!(report.delivered, 0);
+        assert_eq!(report.failed, 1);
+        assert_eq!(report.outcomes[0].status, DeliveryStatus::SinkFailed);
+        assert!(
+            report.outcomes[0]
+                .error
+                .as_deref()
+                .unwrap_or_default()
+                .contains("missing Discord bot token")
+        );
+    }
+
+    #[tokio::test]
+    async fn dispatcher_continues_after_one_discord_delivery_fails() {
+        let (failing_webhook, failing_server) =
+            spawn_response_server("500 Internal Server Error", "synthetic discord failure").await;
+        let (ok_webhook, ok_server) = spawn_response_server("204 No Content", "").await;
+        let config = config_with_routes(vec![
+            RouteRule {
+                event: "hermes.agent.*".to_string(),
+                webhook: Some(failing_webhook),
+                ..RouteRule::default()
+            },
+            RouteRule {
+                event: "hermes.*".to_string(),
+                webhook: Some(ok_webhook),
+                ..RouteRule::default()
+            },
+        ]);
+        let event = envelope("hermes.agent.started");
+        let sink = DiscordSink::for_tests(None, "http://discord.test/api");
+        let dispatcher = dispatcher(config, sink);
+
+        let report = dispatcher.dispatch_event(&event).await;
+        let failing_request = wait_for_request(failing_server).await;
+        let ok_request = wait_for_request(ok_server).await;
+
+        assert_eq!(report.resolved_deliveries, 2);
+        assert_eq!(report.delivered, 1);
+        assert_eq!(report.failed, 1);
+        assert_eq!(report.outcomes[0].status, DeliveryStatus::SinkFailed);
+        assert_eq!(report.outcomes[1].status, DeliveryStatus::Delivered);
+        assert!(failing_request.starts_with("POST /webhook?wait=true HTTP/1.1"));
+        assert!(ok_request.starts_with("POST /webhook?wait=true HTTP/1.1"));
+    }
+
+    async fn spawn_response_server(
+        status_line: &'static str,
+        body: &str,
+    ) -> (String, tokio::task::JoinHandle<String>) {
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let response_body = body.to_string();
+        let server = tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let mut buffer = vec![0_u8; 4096];
+            let read = stream.read(&mut buffer).await.unwrap();
+            let request = String::from_utf8_lossy(&buffer[..read]).to_string();
+            let response = format!(
+                "HTTP/1.1 {status_line}\r\ncontent-length: {}\r\ncontent-type: application/json\r\n\r\n{}",
+                response_body.len(),
+                response_body
+            );
+            stream.write_all(response.as_bytes()).await.unwrap();
+            request
+        });
+
+        (format!("http://{address}/webhook"), server)
+    }
+
+    async fn wait_for_request(server: tokio::task::JoinHandle<String>) -> String {
+        tokio::time::timeout(std::time::Duration::from_secs(2), server)
+            .await
+            .expect("fake Discord server timed out waiting for request")
+            .expect("fake Discord server task failed")
+    }
+
+    fn dispatcher(config: AppConfig, sink: DiscordSink) -> Dispatcher {
+        let mut sinks: HashMap<String, Arc<dyn Sink>> = HashMap::new();
+        sinks.insert("discord".to_string(), Arc::new(sink));
+        Dispatcher::new(
+            crate::router::Router::new(config),
+            Arc::new(DefaultRenderer),
+            sinks,
+        )
+    }
+
+    fn config_with_routes(routes: Vec<RouteRule>) -> AppConfig {
+        AppConfig {
+            routes,
+            ..AppConfig::default()
+        }
+    }
+
+    fn envelope(kind: &str) -> EventEnvelope {
+        from_incoming_event(&IncomingEvent::new(
+            kind,
+            json!({
+                "provider": "hermes",
+                "source": "gateway",
+                "platform": "telegram",
+                "session_id": "synthetic-session-001",
+                "agent_name": "demo-agent",
+                "project": "hermes"
+            }),
+        ))
+        .unwrap()
     }
 
     fn message(content: &str, mention: Option<&str>) -> SinkMessage {
