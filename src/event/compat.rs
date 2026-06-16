@@ -60,6 +60,7 @@ fn metadata_for(event: &IncomingEvent, canonical_kind: &str) -> EventMetadata {
         format: event.format,
         template: event.template.clone(),
         priority: priority_for(canonical_kind),
+        tool: string_field(&event.payload, "tool"),
         provider: string_field(&event.payload, "provider"),
         source: string_field(&event.payload, "source"),
         platform: string_field(&event.payload, "platform"),

@@ -6,3 +6,4 @@ pub mod event;
 pub mod events;
 pub mod hermes;
 pub mod privacy;
+pub mod router;

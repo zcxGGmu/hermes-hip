@@ -51,7 +51,11 @@ async fn real_main() -> Result<()> {
             print_event_accepted("emit", &accepted);
             Ok(())
         }
-        Commands::Explain(args) => print_placeholder("explain", args.into_event()?),
+        Commands::Explain(args) => {
+            let config = AppConfig::load_or_default(&config_path)?;
+            print!("{}", explain_event(&config, args.into_event()?)?);
+            Ok(())
+        }
         Commands::Config { command } => match command.unwrap_or(ConfigCommand::Show) {
             ConfigCommand::Show => {
                 let config = AppConfig::load_or_default(&config_path)?;
@@ -112,6 +116,18 @@ async fn submit_hermes_hook(
     client.post_hermes_hook(hook).await
 }
 
+fn explain_event(config: &AppConfig, event: IncomingEvent) -> Result<String> {
+    let sanitized = hermeship::privacy::sanitize_payload(&event.payload, &config.privacy);
+    let event = IncomingEvent {
+        payload: sanitized,
+        ..event
+    };
+    let envelope = hermeship::event::compat::from_incoming_event(&event)?;
+    let router = hermeship::router::Router::new(config.clone());
+
+    Ok(router.explain(&envelope).to_string())
+}
+
 fn read_payload_arg(payload: &str, mut stdin: impl Read) -> Result<String> {
     if payload != "-" {
         return Ok(payload.to_string());
@@ -165,7 +181,7 @@ mod tests {
     use hermeship::events::IncomingEvent;
     use hermeship::hermes::HermesHookEnvelope;
 
-    use super::{VERSION, read_payload_arg, submit_event, submit_hermes_hook};
+    use super::{VERSION, explain_event, read_payload_arg, submit_event, submit_hermes_hook};
 
     #[tokio::test]
     async fn daemon_emit_command_posts_event_to_daemon() {
@@ -276,6 +292,48 @@ mod tests {
         .unwrap();
 
         assert_eq!(payload, r#"{"event":"agent:start"}"#);
+    }
+
+    #[test]
+    fn router_explain_event_prints_route_diagnostics_without_daemon() {
+        let config = AppConfig {
+            routes: vec![
+                hermeship::config::RouteRule {
+                    event: "hermes.agent.*".to_string(),
+                    channel: Some("ops".to_string()),
+                    format: Some(hermeship::config::MessageFormat::Alert),
+                    ..hermeship::config::RouteRule::default()
+                },
+                hermeship::config::RouteRule {
+                    event: "hermes.agent.*".to_string(),
+                    filter: std::collections::BTreeMap::from([(
+                        "platform".to_string(),
+                        "discord".to_string(),
+                    )]),
+                    channel: Some("discord-only".to_string()),
+                    ..hermeship::config::RouteRule::default()
+                },
+            ],
+            ..AppConfig::default()
+        };
+        let event = IncomingEvent::new(
+            "hermes.agent.started",
+            json!({
+                "platform": "telegram",
+                "session_id": "demo"
+            }),
+        );
+
+        let output = explain_event(&config, event).unwrap();
+
+        assert!(output.contains("event: hermes.agent.started"));
+        assert!(
+            output.contains("route candidates: hermes.agent.started, hermes.agent.*, hermes.*")
+        );
+        assert!(output.contains("[MATCH] #0"));
+        assert!(output.contains("DiscordChannel(\"ops\")"));
+        assert!(output.contains("[skip] #1"));
+        assert!(output.contains("platform expected \"discord\" actual \"telegram\""));
     }
 
     async fn spawn_test_daemon(

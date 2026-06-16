@@ -316,26 +316,26 @@
 
 ### 任务 4.1：Router
 
-- [ ] 新建 router 模块。
+- [x] 新建 router 模块。
   - 新建：`src/router.rs`
   - 类型：`ResolvedDelivery`、`SinkTarget`、`DeliveryExplanation`。
-- [ ] 实现 route match。
+- [x] 实现 route match。
   - 支持 event glob。
   - 支持 filter map。
   - 支持 0..N delivery。
-- [ ] 实现 route candidates。
+- [x] 实现 route candidates。
   - `hermes.agent.*`、`hermes.session.*`、`hermes.*`。
-- [ ] 实现 `hermeship explain`。
+- [x] 实现 `hermeship explain`。
   - 展示 matched routes、failed filters、delivery target。
-- [ ] 编写 router 测试。
+- [x] 编写 router 测试。
   - 覆盖：多 route、filter 命中/未命中、缺 channel、template/format/mention 继承。
-- [ ] 编写 `explain` 合约测试。
+- [x] 编写 `explain` 合约测试。
   - 覆盖：route 命中原因、filter 失败原因、无 route、delivery target。
   - 完成标准：`explain` 输出可用于定位配置问题，不只返回布尔结果。
-- [ ] 验证任务 4.1。
+- [x] 验证任务 4.1。
   - 命令：`cargo test router`
   - 命令：`cargo run -- explain hermes.agent.started --payload '{"platform":"telegram","session_id":"demo"}'`
-- [ ] 提交任务 4.1。
+- [x] 提交任务 4.1。
   - commit：`feat: 实现多投递路由`
 
 ### 任务 4.2：Renderer
@@ -705,6 +705,21 @@
 ## 运行状态日志
 
 最新记录放在最上方。
+
+### 2026-06-16 - Milestone 4.1 Router
+
+- [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
+- [x] 已确认启动时工作树干净：`git status --short --branch` 只有分支行；最近提交为 `7bc2bff`、`7b10816`、`12713ed`。
+- [x] 已阅读 `src/cli.rs`、`src/main.rs`、`src/config.rs`、`src/events.rs`、`src/event/mod.rs`、`src/event/body.rs`、`src/event/compat.rs`、`src/privacy.rs`、`src/hermes.rs` 与 `tests/fixtures/README.md`，确认本阶段只实现 Router 与 `explain`。
+- [x] 已先写失败测试并运行 Red：`cargo test router` 在实现前失败于缺少 `Router`、`SinkTarget`、`glob_match` 和真实 explain helper。
+- [x] 已新增 `src/router.rs` 并导出 `hermeship::router`，实现 `Router`、`ResolvedDelivery`、`SinkTarget`、`DeliveryExplanation`、event glob、route candidates、结构化 metadata filter、disabled route 与 missing target 诊断。
+- [x] 已将 `hermeship explain` 从 placeholder 替换为本地诊断路径：加载配置、清洗 payload、转 typed `EventEnvelope`、调用 router explain 并打印 route candidates、matched/skipped routes、failed filters 与 delivery target；不调用 daemon、不入队、不渲染、不投递。
+- [x] 已覆盖测试：多 route 多投递、filter 命中/未命中、disabled route、missing target、无 route、event hint/default channel fallback、route-level channel/format/template/mention 继承、explain 输出契约和 webhook 诊断脱敏。
+- [x] 已处理代码审查反馈：`explain` human/serialized diagnostics 不再输出完整 Discord webhook URL，内部 `SinkTarget::DiscordWebhook(String)` 仍保留原值供后续 dispatcher 使用。
+- [x] 已确认本阶段没有实现 renderer、dispatcher、sink、hook bridge install、install/uninstall lifecycle 或 release preflight。
+- [x] 已运行验证：`cargo test router`（6 lib tests + 1 bin test passed）、`cargo run -- explain hermes.agent.started --payload '{"platform":"telegram","session_id":"demo"}'` 返回 no routes/no deliveries 诊断、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（67 lib tests + 6 bin tests passed）均通过。
+- [x] 剩余风险：Router 目前只产出 Discord channel/webhook delivery plan，不实际渲染或投递；dispatcher/consumer 仍在 Milestone 4.3 实现。
+- [x] 提交状态：随本阶段提交 `feat: 实现多投递路由` 一并完成。
 
 ### 2026-06-16 - Milestone 3.3 Hermes hook ingress
 

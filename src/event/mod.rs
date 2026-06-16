@@ -59,6 +59,7 @@ pub struct EventMetadata {
     pub format: Option<MessageFormat>,
     pub template: Option<String>,
     pub priority: EventPriority,
+    pub tool: Option<String>,
     pub provider: Option<String>,
     pub source: Option<String>,
     pub platform: Option<String>,
