@@ -12,7 +12,7 @@
 - 方案文档与执行清单已经拆分：方案文档维护架构和边界，`tasks/development-checklist.md` 和 `tasks/todo.md` 维护可勾选进度。
 - 默认测试策略已经确定：使用本地 fixture、fake sink、fake HTTP、fake Hermes home、fake hermeship binary；真实 Discord/Hermes 只进入 live verification。
 - 当前开发分支：`codex/milestone-1-cli`。
-- 当前最新功能阶段：Milestone 4.1 Router；上一功能阶段提交为 `7b10816 feat: 增加 Hermes hook ingress`。
+- 当前最新功能阶段提交：`864e7f4 feat: 实现多投递路由`。
 - 当前工作树在本次状态更新前为干净状态；如后续继续开发，仍需先运行 `git status --short --branch` 确认。
 - 当前下一步：从 Milestone 4 继续，优先执行任务 4.2：Renderer。
 
@@ -150,7 +150,7 @@
 - 已覆盖多 route 多投递、filter 命中/未命中、disabled route、missing target、无 route、event hint/default channel fallback、route-level channel/format/template/mention 继承、explain 输出契约和 webhook 诊断脱敏。
 - 已根据代码审查修复 Discord webhook 诊断泄漏风险：`explain` human/serialized diagnostics 不输出完整 webhook URL，内部 delivery target 仍保留原值供后续 dispatcher 使用。
 - 已运行验证：`cargo test router`（6 lib tests + 1 bin test passed）、`cargo run -- explain hermes.agent.started --payload '{"platform":"telegram","session_id":"demo"}'` 返回 no routes/no deliveries 诊断、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（67 lib tests + 6 bin tests passed）。
-- 提交：本阶段随 `feat: 实现多投递路由` 提交。
+- 已提交：`864e7f4 feat: 实现多投递路由`。
 
 ## 未完成
 
@@ -206,7 +206,7 @@
 
 当前状态：
 - 当前分支是 codex/milestone-1-cli。
-- 最新功能阶段：Milestone 4.1 Router；上一功能阶段提交为 7b10816 feat: 增加 Hermes hook ingress。
+- 最新功能阶段提交：864e7f4 feat: 实现多投递路由。
 - Milestone 0 已完成并提交：af57c49 docs: 明确 hermeship 完整项目方向。
 - Milestone 1.1 已完成并提交：d03170e chore: 搭建 Hermeship Rust CLI 骨架。
 - Milestone 1.2 已完成并提交：50723af feat: 实现 hermeship 配置模型与 config CLI。
@@ -217,7 +217,7 @@
 - Milestone 3.1 已完成并提交：ff5c589 feat: 增加 hermeship daemon health。
 - Milestone 3.2 已完成并提交：0b63e49 feat: 增加 daemon event ingress。
 - Milestone 3.3 已完成并提交：7b10816 feat: 增加 Hermes hook ingress。
-- Milestone 4.1 已完成：Router 与 hermeship explain。
+- Milestone 4.1 已完成并提交：864e7f4 feat: 实现多投递路由。
 - 已实现 src/events.rs：IncomingEvent、RoutingMetadata、字段别名反序列化、空/null payload 归一，以及 MessageFormat 的单一复用/重导出策略。
 - 已实现 src/event/：EventEnvelope、EventBody、EventMetadata、EventPriority、Hermes canonical mapping、IncomingEvent -> EventEnvelope conversion。
 - 已实现 src/privacy.rs：sanitize_payload、redact_value、excerpt_policy、敏感 key 递归脱敏、正文默认禁发、安全摘要和 opt-in 摘录。

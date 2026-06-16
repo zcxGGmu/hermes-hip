@@ -336,7 +336,7 @@
   - 命令：`cargo test router`
   - 命令：`cargo run -- explain hermes.agent.started --payload '{"platform":"telegram","session_id":"demo"}'`
 - [x] 提交任务 4.1。
-  - commit：`feat: 实现多投递路由`
+  - commit：`864e7f4 feat: 实现多投递路由`
 
 ### 任务 4.2：Renderer
 
@@ -719,7 +719,7 @@
 - [x] 已确认本阶段没有实现 renderer、dispatcher、sink、hook bridge install、install/uninstall lifecycle 或 release preflight。
 - [x] 已运行验证：`cargo test router`（6 lib tests + 1 bin test passed）、`cargo run -- explain hermes.agent.started --payload '{"platform":"telegram","session_id":"demo"}'` 返回 no routes/no deliveries 诊断、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（67 lib tests + 6 bin tests passed）均通过。
 - [x] 剩余风险：Router 目前只产出 Discord channel/webhook delivery plan，不实际渲染或投递；dispatcher/consumer 仍在 Milestone 4.3 实现。
-- [x] 提交状态：随本阶段提交 `feat: 实现多投递路由` 一并完成。
+- [x] 提交状态：随本阶段提交 `864e7f4 feat: 实现多投递路由` 一并完成。
 
 ### 2026-06-16 - Milestone 3.3 Hermes hook ingress
 
