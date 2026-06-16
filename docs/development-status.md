@@ -13,6 +13,7 @@
 - 默认测试策略已经确定：使用本地 fixture、fake sink、fake HTTP、fake Hermes home、fake hermeship binary；真实 Discord/Hermes 只进入 live verification。
 - 当前开发分支：`codex/milestone-1-cli`。
 - 当前最新功能阶段提交：`1536b6a feat: 增加 Git Source 本地事件路径`。
+- 当前交接工作台：`tasks/todo.md` 已切换到 Milestone 8.2 GitHub Source 本地 deterministic parity。
 - 下次继续开发前必须先运行 `git status --short --branch` 确认工作树，只在预期文档/代码变更上继续。
 - 当前下一步：继续 Milestone 8.2，执行 GitHub Source 本地 deterministic parity 扩展。
 

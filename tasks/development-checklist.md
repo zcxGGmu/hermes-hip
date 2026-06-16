@@ -730,6 +730,17 @@
 
 最新记录放在最上方。
 
+### 2026-06-17 - Milestone 8.1 完成后交接更新
+
+- [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`。
+- [x] 已确认当前分支为 `codex/milestone-1-cli`，文档更新前工作树干净，最近提交为 `a6bd734 docs: 更新 Hermeship Milestone 8.1 交接状态`、`1536b6a feat: 增加 Git Source 本地事件路径`、`475f2a3 docs: 更新 Hermeship Milestone 8 开发入口`。
+- [x] 已确认 Milestone 8.1 Git Source 本地 deterministic parity 已完成并提交，最新功能阶段提交为 `1536b6a feat: 增加 Git Source 本地事件路径`。
+- [x] 已更新 `docs/development-status.md`，明确当前交接工作台已切换到 Milestone 8.2 GitHub Source。
+- [x] 已更新 `tasks/todo.md`，从已完成的 Milestone 8.1 工作台切换为 Milestone 8.2 GitHub Source 执行计划，并保留 8.1 Review。
+- [x] 已确认当前未完成范围为 Milestone 8.2 GitHub Source、Milestone 8.3 tmux、Milestone 8.4 cron/memory、Milestone 9 文档与 live verification、Milestone 10 Hermes plugin/observer。
+- [x] 本次只做文档交接更新，不进入 Milestone 8.2 实现，不修改功能代码，不执行真实 live verification、Slack sink 或 Hermes plugin/observer。
+- [x] 本次文档验证：`git diff --check`、`git status --short --branch`。
+
 ### 2026-06-17 - Milestone 8.1 Git Source 本地 deterministic parity
 
 - [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
