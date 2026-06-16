@@ -729,6 +729,16 @@
 
 最新记录放在最上方。
 
+### 2026-06-16 - Milestone 7 完成后交接更新
+
+- [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`。
+- [x] 已确认当前分支为 `codex/milestone-1-cli`，更新前工作树干净，最新提交为 `162efcd feat: 增加安装生命周期与发布预检`。
+- [x] 已更新 `docs/development-status.md`，明确 Milestone 0 到 Milestone 7 已完成并提交，Milestone 8 到 Milestone 10 未完成。
+- [x] 已更新 `tasks/todo.md`，切换为 Milestone 8 的下次启动工作台，并记录当前基线、边界、下次执行计划和 Review。
+- [x] 已修正文档中过期的 Milestone 7 提交引用，统一为实际 HEAD `162efcd`。
+- [x] 本次只做文档交接更新，不进入 Milestone 8 实现，不修改功能代码，不执行真实 live verification、Slack sink 或 Hermes plugin/observer。
+- [x] 本次文档验证：`git diff --check`、过期 Milestone 7 提交号搜索、`git status --short --branch`。
+
 ### 2026-06-16 - Milestone 7 安装、生命周期与运维 CLI
 
 - [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
@@ -743,7 +753,7 @@
 - [x] 已根据代码审查修复安全边界：`setup` 不再接受明文 token argv，改用 stdin/env；`config show` 默认脱敏；写配置时使用私有权限；`install` 写入 home marker；destructive `uninstall` 必须验证 marker；`--remove-hooks` 默认使用 Hermes home；release preflight 纳入 `docs/operations.md`。
 - [x] 已运行验证：`cargo test lifecycle`（10 passed）、`cargo test release_preflight`（6 passed）、`cargo test cli`（17 passed）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（139 lib tests + 8 bin tests passed）均通过。
 - [x] 已确认本阶段没有实现真实 live verification、Slack sink、Hermes plugin/observer、真实 systemd/launchd 安装或外部网络发布自动化。
-- [x] 提交状态：已提交 `4fe5c14 feat: 增加安装生命周期与发布预检`。
+- [x] 提交状态：已提交 `162efcd feat: 增加安装生命周期与发布预检`。
 
 ### 2026-06-16 - Milestone 6 完成后交接更新
 

@@ -1,6 +1,6 @@
 # Hermeship 开发状态
 
-最后更新：2026-06-16 Milestone 7 已完成，Milestone 8 待执行
+最后更新：2026-06-16 Milestone 7 已完成并提交，Milestone 8 待执行
 
 本文是下次启动 Codex 会话时的状态入口。执行开发前仍以 `tasks/development-checklist.md` 的 checkbox 为准；当前阶段计划维护在 `tasks/todo.md`。
 
@@ -12,7 +12,7 @@
 - 方案文档与执行清单已经拆分：方案文档维护架构和边界，`tasks/development-checklist.md` 和 `tasks/todo.md` 维护可勾选进度。
 - 默认测试策略已经确定：使用本地 fixture、fake sink、fake HTTP、fake Hermes home、fake hermeship binary；真实 Discord/Hermes 只进入 live verification。
 - 当前开发分支：`codex/milestone-1-cli`。
-- 当前最新功能阶段提交：`4fe5c14 feat: 增加安装生命周期与发布预检`。
+- 当前最新功能阶段提交：`162efcd feat: 增加安装生命周期与发布预检`。
 - 下次继续开发前必须先运行 `git status --short --branch` 确认工作树，只在预期文档/代码变更上继续。
 - 当前下一步：继续 Milestone 8，执行 clawhip 功能 parity 扩展。
 
@@ -27,7 +27,7 @@
 | Milestone 4.1 - 4.3 | 已完成并提交 | router、renderer、dispatcher 与 fake sink |
 | Milestone 5.1 - 5.3 | 已完成并提交 | Discord sink、sink 失败语义、本地端到端 smoke |
 | Milestone 6 | 已完成并提交 | `f6f98a3 feat: 支持 Hermes hook bridge 安装` |
-| Milestone 7 | 已完成 | 安装、生命周期与运维 CLI |
+| Milestone 7 | 已完成并提交 | `162efcd feat: 增加安装生命周期与发布预检` |
 | Milestone 8 | 未完成 | 下一入口：clawhip 功能 parity 扩展 |
 | Milestone 9 | 未完成 | 文档与 live verification |
 | Milestone 10 | 未完成 | Hermes plugin / observer 研究 |
@@ -316,7 +316,7 @@
 
 当前状态：
 - 当前分支是 codex/milestone-1-cli。
-- 最新功能阶段提交：4fe5c14 feat: 增加安装生命周期与发布预检。
+- 最新功能阶段提交：162efcd feat: 增加安装生命周期与发布预检。
 - Milestone 0 已完成并提交：af57c49 docs: 明确 hermeship 完整项目方向。
 - Milestone 1.1 已完成并提交：d03170e chore: 搭建 Hermeship Rust CLI 骨架。
 - Milestone 1.2 已完成并提交：50723af feat: 实现 hermeship 配置模型与 config CLI。
@@ -335,7 +335,7 @@
 - Milestone 5.3 已完成并提交：026e80c test: 增加 daemon 到 sink 的端到端覆盖。
 - Milestone 6 已完成并提交：f6f98a3 feat: 支持 Hermes hook bridge 安装。
 - Milestone 6 范围：Hermes Hook Bridge 安装、handler fail-open smoke 和 hook 卸载回滚。
-- Milestone 7 已完成并提交：4fe5c14 feat: 增加安装生命周期与发布预检。
+- Milestone 7 已完成并提交：162efcd feat: 增加安装生命周期与发布预检。
 - Milestone 7 范围：安装、setup、uninstall、本地 service 模板、运维文档和 release preflight。
 - Milestone 8 到 Milestone 10 未完成。
 - 已实现 src/events.rs：IncomingEvent、RoutingMetadata、字段别名反序列化、空/null payload 归一，以及 MessageFormat 的单一复用/重导出策略。
