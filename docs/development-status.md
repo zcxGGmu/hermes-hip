@@ -1,6 +1,6 @@
 # Hermeship 开发状态
 
-最后更新：2026-06-16 Milestone 5.2 已完成，Milestone 5.3 待执行
+最后更新：2026-06-16 Milestone 5.3 已完成，Milestone 6 待执行
 
 本文是下次启动 Codex 会话时的状态入口。执行开发前仍以 `tasks/development-checklist.md` 的 checkbox 为准；当前阶段计划维护在 `tasks/todo.md`。
 
@@ -12,9 +12,9 @@
 - 方案文档与执行清单已经拆分：方案文档维护架构和边界，`tasks/development-checklist.md` 和 `tasks/todo.md` 维护可勾选进度。
 - 默认测试策略已经确定：使用本地 fixture、fake sink、fake HTTP、fake Hermes home、fake hermeship binary；真实 Discord/Hermes 只进入 live verification。
 - 当前开发分支：`codex/milestone-1-cli`。
-- 当前最新功能阶段提交：`ea9b789 feat: 完善 sink 失败处理`。
+- 当前最新功能阶段提交主题：`test: 增加 daemon 到 sink 的端到端覆盖`。
 - 下次继续开发前必须先运行 `git status --short --branch` 确认工作树，只在预期文档/代码变更上继续。
-- 当前下一步：继续 Milestone 5，执行任务 5.3 本地端到端 smoke。
+- 当前下一步：继续 Milestone 6，执行 Hermes Hook Bridge 安装。
 
 ## 已完成
 
@@ -201,18 +201,30 @@
 - 本阶段没有实现 Hermes hook bridge install、install/uninstall lifecycle、release preflight、真实 live verification、Slack sink 或 Hermes plugin/observer。
 - 已提交：`ea9b789 feat: 完善 sink 失败处理`。
 
+### Milestone 5.3：本地端到端 smoke
+
+- 已新增 daemon 内部 sink registry 注入 helper，生产 `daemon_router()` 仍使用真实 Discord sink registry，测试可通过同一条内部 queue consumer 路径注入 `FakeSink`。
+- 已新增本地 deterministic smoke：随机端口 test daemon 接收 `POST /api/hermes/hook`，内部 dispatcher 执行 `Router -> DefaultRenderer -> FakeSink`，最终 fake sink 记录渲染后的 delivery。
+- 已断言 smoke 不依赖真实 Discord、真实 Hermes gateway、外网或真实凭据；不启动固定端口 daemon。
+- 已断言 fake sink 收到 `hermes.agent.started`、`DiscordChannel("ops")`、`compact` 格式、agent/platform/session 摘要和 message/response 字符数摘要。
+- 已断言默认隐私保护生效，不泄漏完整 message、response、token、cookie 或 secret。
+- 已通过现有本地 test daemon/client 测试继续覆盖 `send` 和 `emit` 进入 `/event` 的本地路径。
+- 已运行验证：`cargo test dispatch`、`cargo test daemon`、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`。
+- 本阶段没有实现 Hermes hook bridge install、install/uninstall lifecycle、release preflight、真实 live verification、Slack sink 或 Hermes plugin/observer。
+- 已提交：`test: 增加 daemon 到 sink 的端到端覆盖`。
+
 ## 未完成
 
-- Milestone 5.3 到 Milestone 10 均未执行。
+- Milestone 6 到 Milestone 10 均未执行。
 - Hermes hook bridge、安装/回滚、release preflight、live verification 均未实现。
-- 默认 daemon queue 已有 dispatcher consumer；Discord sink 已实现并覆盖本地失败矩阵，真实 Discord live delivery 尚未执行。
+- 默认 daemon queue 已有 dispatcher consumer；Discord sink 已实现并覆盖本地失败矩阵；daemon 到 fake sink 的本地 smoke 已覆盖，真实 Discord live delivery 尚未执行。
 - live Discord verification 凭据是否可用尚未确认。
 - Slack sink、git/GitHub/tmux parity 是否进入 `0.1.0` 尚未最终确认。
 - macOS launchd 是否与 systemd 同期实现尚未最终确认。
 
 ## 下一步入口
 
-从 `tasks/development-checklist.md` 的 **Milestone 5：Discord Sink 与基础 Live Path** 继续，优先执行 **任务 5.3：本地端到端 smoke**。
+从 `tasks/development-checklist.md` 的 **Milestone 6：Hermes Hook Bridge 安装** 继续。
 
 建议第一段工作：
 
@@ -220,7 +232,7 @@
 2. 确认当前分支、最新提交和未提交变更：
    - `git status --short --branch`
    - `git log -3 --oneline`
-3. 确认 Milestone 5.2 Sink 失败语义已完成，并从 `tasks/development-checklist.md` 的任务 5.3 继续。
+3. 确认 Milestone 5.3 本地端到端 smoke 已完成，并从 `tasks/development-checklist.md` 的 Milestone 6 继续。
 4. 读取当前相关代码：
    - `src/cli.rs`
    - `src/config.rs`
@@ -236,11 +248,10 @@
    - `src/sink/mod.rs`
    - `src/sink/fake.rs`
    - `tests/fixtures/README.md`
-5. 从任务 5.3 继续，先写失败测试，再实现本地 daemon + fake sink 端到端 smoke。
-6. 注意任务 5.3 只做本地可重复 smoke，不进入 hook bridge install、release preflight、真实 live verification 或 Slack sink。
-7. 运行任务 5.3 验证命令：
-   - `cargo test dispatch`
-   - `cargo test daemon`
+5. 从 Milestone 6 继续，先写失败测试，再实现 Hermes hook bridge 模板与安装测试。
+6. 注意 Milestone 6 只实现本地 hook bridge 安装和 fail-open handler smoke，不进入 release preflight、真实 live verification 或 Slack sink。
+7. 运行 Milestone 6 验证命令：
+   - `cargo test hooks`
    - `cargo fmt --all -- --check`
    - `cargo clippy --all-targets -- -D warnings`
    - `cargo test`
@@ -261,7 +272,7 @@
 
 当前状态：
 - 当前分支是 codex/milestone-1-cli。
-- 最新功能阶段提交：ea9b789 feat: 完善 sink 失败处理。
+- 最新功能阶段提交主题：test: 增加 daemon 到 sink 的端到端覆盖。
 - Milestone 0 已完成并提交：af57c49 docs: 明确 hermeship 完整项目方向。
 - Milestone 1.1 已完成并提交：d03170e chore: 搭建 Hermeship Rust CLI 骨架。
 - Milestone 1.2 已完成并提交：50723af feat: 实现 hermeship 配置模型与 config CLI。
@@ -277,10 +288,11 @@
 - Milestone 4.3 已完成并提交：a336e01 feat: 实现事件 dispatcher 与 fake sink。
 - Milestone 5.1 已完成并提交：0cd6e4e feat: 增加 Discord sink。
 - Milestone 5.2 已完成并提交：ea9b789 feat: 完善 sink 失败处理。
+- Milestone 5.3 已完成并提交：test: 增加 daemon 到 sink 的端到端覆盖。
 - 已实现 src/events.rs：IncomingEvent、RoutingMetadata、字段别名反序列化、空/null payload 归一，以及 MessageFormat 的单一复用/重导出策略。
 - 已实现 src/event/：EventEnvelope、EventBody、EventMetadata、EventPriority、Hermes canonical mapping、IncomingEvent -> EventEnvelope conversion。
 - 已实现 src/privacy.rs：sanitize_payload、redact_value、excerpt_policy、敏感 key 递归脱敏、正文默认禁发、安全摘要和 opt-in 摘录。
-- 已实现 src/daemon.rs：/health、/event、/api/hermes/hook、HealthResponse、QueueHealth、EventAcceptedResponse、bounded mpsc queue、daemon listener 和 serve 入口。
+- 已实现 src/daemon.rs：/health、/event、/api/hermes/hook、HealthResponse、QueueHealth、EventAcceptedResponse、bounded mpsc queue、daemon listener、serve 入口，以及可注入 fake sink 的本地 daemon smoke 测试路径。
 - 已实现 src/client.rs：DaemonClient health 查询、event POST、Hermes hook POST、base URL 规范化、timeout 和清晰错误。
 - 已实现 src/hermes.rs：HermesHookEnvelope、event/event_type alias、provider/source 默认值和 Hermes hook envelope -> IncomingEvent normalization。
 - 已实现 src/router.rs：Router、ResolvedDelivery、SinkTarget、DeliveryExplanation、event glob、route candidates、metadata filter、disabled/missing target 诊断和 0..N delivery。
@@ -290,18 +302,18 @@
 - 已接入 hermeship start/status/emit/send/hermes hook 的真实 daemon health/event/hook 行为，hermes hook 支持 `--payload -` stdin。
 - 已接入 hermeship explain 的本地 route explain 行为：加载配置、清洗 payload、转 typed EventEnvelope、展示 matched/skipped routes、failed filters 和 delivery target，不调用 daemon、不入队、不投递。
 - Hermes canonical mapping 已覆盖 gateway:startup、session:start、session:end、session:reset、agent:start、agent:step、agent:end；显式失败的 agent:end 映射为 hermes.agent.failed；未知 event 降级为 Custom。
-- 已通过验证：cargo test sink、cargo test dispatch、cargo fmt --all -- --check、cargo clippy --all-targets -- -D warnings、cargo test。
+- 已通过验证：cargo test sink、cargo test dispatch、cargo test daemon、cargo fmt --all -- --check、cargo clippy --all-targets -- -D warnings、cargo test。
 - Hermeship 是 Hermes-native daemon-first event router，不是 thin adapter，不调用 clawhip runtime，也不依赖运行中的 clawhip daemon。
 - 方案文档只维护架构和边界，执行进度维护在 tasks/development-checklist.md 和 tasks/todo.md。
 
-请从 tasks/development-checklist.md 的 Milestone 5 继续，优先执行任务 5.3：本地端到端 smoke：
+请从 tasks/development-checklist.md 的 Milestone 6 继续，优先执行 Hermes Hook Bridge 安装：
 1. 先复习 tasks/lessons.md，并确认当前分支、最新提交和未提交变更：git status --short --branch、git log -3 --oneline。
-2. 确认 tasks/development-checklist.md 的 Milestone 5.3 计划，并将当前任务计划写入 tasks/todo.md。
-3. 阅读 src/daemon.rs、src/client.rs、src/router.rs、src/render/mod.rs、src/render/default.rs、src/dispatch.rs、src/sink/mod.rs、src/sink/fake.rs、tests/fixtures/README.md。
-4. 先写失败测试，再实现本地 daemon + fake sink 端到端 smoke。
-5. 本阶段只做本地可重复 smoke，不实现 hook bridge install、release preflight、真实 live verification 或 Slack sink。
+2. 确认 tasks/development-checklist.md 的 Milestone 6 计划，并将当前任务计划写入 tasks/todo.md。
+3. 阅读 src/cli.rs、src/main.rs、src/hermes.rs、src/client.rs、src/daemon.rs、src/config.rs、tests/fixtures/README.md，以及方案文档的 Hermes Hook Bridge 章节。
+4. 先写失败测试，再实现 Hermes hook bridge 模板、安装路径和 fail-open handler smoke。
+5. 本阶段只做本地 deterministic hook bridge 安装与 handler smoke，不实现 release preflight、真实 live verification 或 Slack sink。
 6. 默认测试仍只使用本地 deterministic fixture。
-7. 运行验证：cargo test dispatch、cargo test daemon、cargo fmt --all -- --check、cargo clippy --all-targets -- -D warnings、cargo test。
+7. 运行验证：cargo test hooks、cargo fmt --all -- --check、cargo clippy --all-targets -- -D warnings、cargo test。
 8. 更新 tasks/development-checklist.md 的运行状态日志和 tasks/todo.md 的 Review。
 9. 阶段完成后必须验证并提交，commit 信息使用详细中文，说明变更、验证和影响。
 ```

@@ -185,8 +185,17 @@ pub fn health_router(config: AppConfig, version: impl Into<String>) -> Router {
 }
 
 pub fn daemon_router(config: AppConfig, version: impl Into<String>) -> Router {
+    let sinks = sink_registry_from_config(&config);
+    daemon_router_with_sink_registry(config, version, sinks)
+}
+
+fn daemon_router_with_sink_registry(
+    config: AppConfig,
+    version: impl Into<String>,
+    sinks: HashMap<String, Arc<dyn Sink>>,
+) -> Router {
     let (queue_tx, queue_rx) = mpsc::channel(DEFAULT_QUEUE_CAPACITY);
-    spawn_dispatcher(config.clone(), queue_rx);
+    spawn_dispatcher(config.clone(), queue_rx, sinks);
 
     let state = DaemonState {
         config,
@@ -201,11 +210,15 @@ pub fn daemon_router(config: AppConfig, version: impl Into<String>) -> Router {
         .with_state(state)
 }
 
-fn spawn_dispatcher(config: AppConfig, queue_rx: mpsc::Receiver<EventEnvelope>) {
+fn spawn_dispatcher(
+    config: AppConfig,
+    queue_rx: mpsc::Receiver<EventEnvelope>,
+    sinks: HashMap<String, Arc<dyn Sink>>,
+) {
     let dispatcher = Dispatcher::new(
         EventRouter::new(config.clone()),
         Arc::new(DefaultRenderer),
-        sink_registry_from_config(&config),
+        sinks,
     );
     tokio::spawn(async move {
         dispatcher.run(queue_rx).await;
@@ -318,14 +331,20 @@ fn configured_sinks(config: &AppConfig) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
+    use std::collections::HashMap;
+    use std::sync::Arc;
+    use std::time::Duration;
 
     use axum::http::header::CONTENT_TYPE;
     use serde_json::json;
     use tokio::sync::mpsc;
 
-    use crate::config::{AppConfig, RouteRule};
+    use crate::config::{AppConfig, MessageFormat, RouteRule};
     use crate::event::{EventBody, EventEnvelope};
     use crate::events::IncomingEvent;
+    use crate::router::SinkTarget;
+    use crate::sink::Sink;
+    use crate::sink::fake::FakeSink;
 
     use super::*;
 
@@ -431,6 +450,92 @@ mod tests {
         .await
         .unwrap();
         server.abort();
+    }
+
+    #[tokio::test]
+    async fn daemon_router_smoke_posts_hook_through_internal_dispatcher_to_fake_sink() {
+        let mut config = AppConfig::default();
+        config.routes.push(RouteRule {
+            event: "hermes.agent.*".to_string(),
+            sink: "discord".to_string(),
+            channel: Some("ops".to_string()),
+            format: Some(MessageFormat::Compact),
+            ..RouteRule::default()
+        });
+
+        let fake = FakeSink::default();
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let router = daemon_router_with_sink_registry(config, "test-version", sink_registry(&fake));
+        let server = tokio::spawn(async move { axum::serve(listener, router).await });
+        let client = crate::client::DaemonClient::from_base_url(format!("http://{address}"));
+
+        let accepted = client
+            .post_hermes_hook(
+                &serde_json::from_value(json!({
+                    "event": "agent:start",
+                    "context": {
+                        "platform": "telegram",
+                        "session_id": "synthetic-session-smoke",
+                        "agent_name": "demo-agent",
+                        "message": "synthetic full message should not leak",
+                        "response": "synthetic full response should not leak",
+                        "token": "synthetic-token-value",
+                        "cookie": "synthetic-cookie-value",
+                        "secret": "synthetic-secret-value"
+                    }
+                }))
+                .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        let deliveries =
+            tokio::time::timeout(Duration::from_secs(2), fake.wait_for_delivery_count(1))
+                .await
+                .unwrap();
+        let health = client.health().await.unwrap();
+        server.abort();
+
+        assert_eq!(accepted.canonical_kind, "hermes.agent.started");
+        assert!(accepted.queued);
+        assert_eq!(health.queue.status, "ready");
+        assert_eq!(health.queue.pending, 0);
+        assert_eq!(deliveries.len(), 1);
+        assert_eq!(
+            deliveries[0].target,
+            SinkTarget::DiscordChannel("ops".to_string())
+        );
+        assert_eq!(deliveries[0].message.event_kind, "hermes.agent.started");
+        assert_eq!(deliveries[0].message.format, MessageFormat::Compact);
+        assert!(
+            deliveries[0]
+                .message
+                .content
+                .contains("hermes agent started")
+        );
+        assert!(deliveries[0].message.content.contains("agent=demo-agent"));
+        assert!(deliveries[0].message.content.contains("platform=telegram"));
+        assert!(
+            deliveries[0]
+                .message
+                .content
+                .contains("session=synthetic-session-smoke")
+        );
+        assert!(deliveries[0].message.content.contains("message_chars="));
+        assert!(deliveries[0].message.content.contains("response_chars="));
+        for forbidden in [
+            "synthetic full message should not leak",
+            "synthetic full response should not leak",
+            "synthetic-token-value",
+            "synthetic-cookie-value",
+            "synthetic-secret-value",
+        ] {
+            assert!(
+                !deliveries[0].message.content.contains(forbidden),
+                "smoke leaked `{forbidden}`"
+            );
+        }
     }
 
     #[tokio::test]
@@ -786,5 +891,11 @@ mod tests {
         });
 
         (format!("http://{address}"), server)
+    }
+
+    fn sink_registry(fake: &FakeSink) -> HashMap<String, Arc<dyn Sink>> {
+        let mut sinks: HashMap<String, Arc<dyn Sink>> = HashMap::new();
+        sinks.insert("discord".to_string(), Arc::new(fake.clone()));
+        sinks
     }
 }

@@ -433,17 +433,24 @@
 
 ### 任务 5.3：本地端到端 smoke
 
-- [ ] 编写 daemon + fake sink E2E。
+- [x] 编写 daemon + fake sink E2E。
   - 启动 test daemon。
   - POST `/api/hermes/hook`。
   - 断言 fake sink 收到渲染消息。
   - 断言默认隐私保护生效。
-- [ ] 验证 `send`。
-  - 命令：`cargo run -- send --channel test --message "hello"`
-  - 使用 fake/dry-run 模式。
-- [ ] 验证 `emit`。
-  - 命令：`cargo run -- emit hermes.agent.started --payload '{"session_id":"demo"}'`
-- [ ] 提交任务 5.3。
+- [x] 验证 `send`。
+  - 命令：`cargo test daemon`
+  - 覆盖：`daemon_send_command_posts_custom_event_to_daemon` 使用本地 test daemon 和 client 验证 `send` 构造 custom event 并 POST `/event`。
+- [x] 验证 `emit`。
+  - 命令：`cargo test daemon`
+  - 覆盖：`daemon_emit_command_posts_event_to_daemon` 使用本地 test daemon 和 client 验证 `emit` 构造 Hermes event 并 POST `/event`。
+- [x] 验证任务 5.3。
+  - 命令：`cargo test dispatch`
+  - 命令：`cargo test daemon`
+  - 命令：`cargo fmt --all -- --check`
+  - 命令：`cargo clippy --all-targets -- -D warnings`
+  - 命令：`cargo test`
+- [x] 提交任务 5.3。
   - commit：`test: 增加 daemon 到 sink 的端到端覆盖`
 
 ## Milestone 6：Hermes Hook Bridge 安装
@@ -718,6 +725,20 @@
 ## 运行状态日志
 
 最新记录放在最上方。
+
+### 2026-06-16 - Milestone 5.3 本地端到端 smoke
+
+- [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
+- [x] 已确认启动时工作树干净：`git status --short --branch` 只有分支行；最近提交为 `cb4cca8`、`ea9b789`、`debb28b`。
+- [x] 已阅读 `src/daemon.rs`、`src/client.rs`、`src/router.rs`、`src/render/mod.rs`、`src/render/default.rs`、`src/dispatch.rs`、`src/sink/mod.rs`、`src/sink/fake.rs` 和 `tests/fixtures/README.md`，确认本阶段只做本地 deterministic smoke，不进入 hook bridge install、release preflight、真实 live verification 或 Slack sink。
+- [x] 已先写失败测试并运行 Red：`cargo test daemon` 在实现前失败于缺少 `daemon_router_with_sink_registry`，正好暴露出生产 daemon router 无法注入 fake sink 的测试缺口。
+- [x] 已在 `src/daemon.rs` 增加内部 sink registry 注入 helper，生产 `daemon_router()` 仍走真实 Discord sink registry，测试可注入 `FakeSink` 并复用同一条 queue consumer 路径。
+- [x] 已新增 deterministic daemon + fake sink smoke：随机端口 test daemon 接收 `POST /api/hermes/hook`，内部 dispatcher 执行 `Router -> DefaultRenderer -> FakeSink`，fake sink 记录渲染后的 delivery。
+- [x] 已通过本地路径验证 `send` 与 `emit`：`cargo test daemon` 覆盖 `daemon_send_command_posts_custom_event_to_daemon` 和 `daemon_emit_command_posts_event_to_daemon`，二者都只走本地 test daemon/client，不需要真实 Discord/Hermes。
+- [x] 已确认默认隐私保护生效：smoke payload 中的完整 message、response、token、cookie、secret 不会出现在 fake sink 消息中。
+- [x] 已运行验证：`cargo test dispatch`（12 passed）、`cargo test daemon`（19 lib-filtered tests + 4 bin-filtered tests passed）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（103 lib tests + 6 bin tests passed）均通过。
+- [x] 已更新 `tasks/todo.md` Review，并将下一入口切到 Milestone 6 Hermes Hook Bridge 安装。
+- [x] 提交状态：随本阶段提交 `test: 增加 daemon 到 sink 的端到端覆盖` 一并完成。
 
 ### 2026-06-16 - Milestone 5.2 Sink 失败语义
 
