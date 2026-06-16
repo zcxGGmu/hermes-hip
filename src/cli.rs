@@ -179,6 +179,8 @@ pub enum HermesCommands {
     Hook(HermesHookArgs),
     /// Install Hermes gateway hook files.
     InstallHooks(InstallHooksArgs),
+    /// Remove Hermes gateway hook files installed by hermeship.
+    UninstallHooks(UninstallHooksArgs),
 }
 
 #[derive(Debug, Clone, Args)]
@@ -196,9 +198,25 @@ pub struct InstallHooksArgs {
     /// Install scope for Hermes hooks.
     #[arg(long, default_value = "global")]
     pub scope: String,
+    /// Hermes home directory. Defaults to HERMES_HOME or ~/.hermes.
+    #[arg(long)]
+    pub home: Option<PathBuf>,
+    /// Print files that would be written without changing disk.
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
     /// Override existing hook files.
     #[arg(long, default_value_t = false)]
     pub force: bool,
+}
+
+#[derive(Debug, Clone, Args)]
+pub struct UninstallHooksArgs {
+    /// Hermes home directory. Defaults to HERMES_HOME or ~/.hermes.
+    #[arg(long)]
+    pub home: Option<PathBuf>,
+    /// Print files that would be removed without changing disk.
+    #[arg(long, default_value_t = false)]
+    pub dry_run: bool,
 }
 
 #[derive(Debug, Clone, Subcommand)]
@@ -212,6 +230,8 @@ pub enum ReleaseCommands {
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use clap::Parser;
 
     use serde_json::json;
@@ -387,6 +407,9 @@ mod tests {
             "install-hooks",
             "--scope",
             "global",
+            "--home",
+            "/tmp/hermes",
+            "--dry-run",
             "--force",
         ]);
 
@@ -395,9 +418,33 @@ mod tests {
                 command: HermesCommands::InstallHooks(args),
             }) => {
                 assert_eq!(args.scope, "global");
+                assert_eq!(args.home, Some(PathBuf::from("/tmp/hermes")));
+                assert!(args.dry_run);
                 assert!(args.force);
             }
             other => panic!("expected hermes install-hooks command, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn parses_hermes_uninstall_hooks_command() {
+        let cli = Cli::parse_from([
+            "hermeship",
+            "hermes",
+            "uninstall-hooks",
+            "--home",
+            "/tmp/hermes",
+            "--dry-run",
+        ]);
+
+        match cli.command {
+            Some(Commands::Hermes {
+                command: HermesCommands::UninstallHooks(args),
+            }) => {
+                assert_eq!(args.home, Some(PathBuf::from("/tmp/hermes")));
+                assert!(args.dry_run);
+            }
+            other => panic!("expected hermes uninstall-hooks command, got {other:?}"),
         }
     }
 
@@ -431,6 +478,7 @@ mod tests {
             "config verify",
             "hermes hook",
             "hermes install-hooks",
+            "hermes uninstall-hooks",
             "install",
             "uninstall",
             "release preflight",

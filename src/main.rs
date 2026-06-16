@@ -8,6 +8,7 @@ use hermeship::config::AppConfig;
 use hermeship::daemon::{EventAcceptedResponse, HealthResponse};
 use hermeship::events::IncomingEvent;
 use hermeship::hermes::HermesHookEnvelope;
+use hermeship::hooks::{HookInstallOptions, HookInstallReport, HookUninstallReport};
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -85,7 +86,29 @@ async fn real_main() -> Result<()> {
                 Ok(())
             }
             HermesCommands::InstallHooks(args) => {
-                print_placeholder("hermes install-hooks", (args.scope, args.force))
+                ensure_global_hermes_hook_scope(&args.scope)?;
+                let hermes_home = args
+                    .home
+                    .unwrap_or_else(hermeship::hooks::default_hermes_home);
+                let report = hermeship::hooks::install_hermes_hooks(&HookInstallOptions {
+                    hermes_home,
+                    hermeship_bin: Some(
+                        std::env::current_exe()
+                            .context("failed to resolve current hermeship binary")?,
+                    ),
+                    force: args.force,
+                    dry_run: args.dry_run,
+                })?;
+                print_hook_install_report(&report);
+                Ok(())
+            }
+            HermesCommands::UninstallHooks(args) => {
+                let hermes_home = args
+                    .home
+                    .unwrap_or_else(hermeship::hooks::default_hermes_home);
+                let report = hermeship::hooks::uninstall_hermes_hooks(hermes_home, args.dry_run)?;
+                print_hook_uninstall_report(&report);
+                Ok(())
             }
         },
         Commands::Install => print_placeholder("install", ()),
@@ -101,6 +124,58 @@ async fn real_main() -> Result<()> {
 fn print_placeholder(name: &str, _args: impl std::fmt::Debug) -> Result<()> {
     println!("{name} command parsed; implementation will arrive in a later milestone");
     Ok(())
+}
+
+fn ensure_global_hermes_hook_scope(scope: &str) -> Result<()> {
+    if scope.trim() == "global" {
+        return Ok(());
+    }
+
+    anyhow::bail!("Hermes gateway hook install currently supports only --scope global")
+}
+
+fn print_hook_install_report(report: &HookInstallReport) {
+    if report.dry_run {
+        println!(
+            "hermes hooks dry-run: would write {}",
+            report.hook_dir.display()
+        );
+        for path in &report.planned_files {
+            println!("  would write {}", path.display());
+        }
+        return;
+    }
+
+    println!("hermes hooks installed: {}", report.hook_dir.display());
+    for path in &report.written_files {
+        println!("  wrote {}", path.display());
+    }
+    for path in &report.skipped_files {
+        println!("  skipped existing {}", path.display());
+    }
+}
+
+fn print_hook_uninstall_report(report: &HookUninstallReport) {
+    if report.dry_run {
+        println!(
+            "hermes hooks dry-run: would remove {}",
+            report.hook_dir.display()
+        );
+        for path in &report.planned_paths {
+            println!("  would remove {}", path.display());
+        }
+        return;
+    }
+
+    if report.removed_paths.is_empty() {
+        println!("hermes hooks not installed: {}", report.hook_dir.display());
+        return;
+    }
+
+    println!("hermes hooks removed:");
+    for path in &report.removed_paths {
+        println!("  removed {}", path.display());
+    }
 }
 
 async fn submit_event(config: &AppConfig, event: IncomingEvent) -> Result<EventAcceptedResponse> {

@@ -6,6 +6,7 @@ pub mod dispatch;
 pub mod event;
 pub mod events;
 pub mod hermes;
+pub mod hooks;
 pub mod privacy;
 pub mod render;
 pub mod router;

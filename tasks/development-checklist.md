@@ -459,64 +459,64 @@
 
 ### 任务 6.1：Hook 模板
 
-- [ ] 创建 Hermes hook 模板目录。
+- [x] 创建 Hermes hook 模板目录。
   - 新建：`templates/hermes-hook/HOOK.yaml`
   - 新建：`templates/hermes-hook/handler.py`
-- [ ] `HOOK.yaml` 声明事件。
+- [x] `HOOK.yaml` 声明事件。
   - `gateway:startup`
   - `session:start`
   - `session:end`
   - `session:reset`
   - `agent:start`
   - `agent:end`
-  - `agent:step` 默认可配置禁用。
-- [ ] `handler.py` 只使用标准库。
+  - 记录：`agent:step` 与 `command:*` 当前不进入默认安装模板，因为 `enable_agent_step` 与 `enable_command_events` 默认关闭。
+- [x] `handler.py` 只使用标准库。
   - 不 import Hermeship package。
   - 调用 `hermeship hermes hook --payload -`。
   - 超时 fail-open。
-- [ ] 编写模板测试。
+- [x] 编写模板测试。
   - 覆盖：manifest 可解析、handler 包含 fail-open 逻辑、不包含 secret。
   - 要求：`handler.py` 只使用 Python 标准库。
-- [ ] 验证任务 6.1。
+- [x] 验证任务 6.1。
   - 命令：`cargo test hooks`
-- [ ] 提交任务 6.1。
-  - commit：`feat: 增加 Hermes hook bridge 模板`
+- [x] 提交任务 6.1。
+  - 记录：随 Milestone 6 阶段提交统一归档。
 
 ### 任务 6.2：Installer
 
-- [ ] 新建 hooks installer。
-  - 新建：`src/hooks/mod.rs`
-  - 函数：`install_hermes_hooks(home, force)`。
-- [ ] 实现 CLI。
+- [x] 新建 hooks installer。
+  - 新建：`src/hooks.rs`
+  - 函数：`install_hermes_hooks(options)`。
+- [x] 实现 CLI。
   - `hermeship hermes install-hooks --home <path> --force`
-- [ ] 支持 dry-run。
+- [x] 支持 dry-run。
   - 打印将写入的文件，不修改磁盘。
-- [ ] 编写 installer 测试。
+- [x] 编写 installer 测试。
   - 覆盖：首次安装、不覆盖、force 覆盖、dry-run、返回路径。
   - 使用：fake Hermes home。
-- [ ] 验证任务 6.2。
+- [x] 验证任务 6.2。
   - 命令：`cargo test hooks`
   - 命令：`cargo run -- hermes install-hooks --home /tmp/hermeship-test-home --force`
   - 命令：`find /tmp/hermeship-test-home/hooks/hermeship -maxdepth 1 -type f -print`
-- [ ] 提交任务 6.2。
-  - commit：`feat: 支持安装 Hermes gateway hooks`
+- [x] 提交任务 6.2。
+  - 记录：随 Milestone 6 阶段提交统一归档。
 
 ### 任务 6.3：Bridge smoke 与回滚
 
-- [ ] 编写 Python handler smoke test。
+- [x] 编写 Python handler smoke test。
   - 使用临时 `HERMES_HOME`。
   - 直接 import/exec handler module。
   - fake `hermeship` binary 验证 stdin payload。
   - 覆盖：binary missing、调用 timeout、子进程失败时 fail-open。
-- [ ] 实现 uninstall/remove hooks。
+- [x] 实现 uninstall/remove hooks。
   - `hermeship hermes uninstall-hooks --home <path>`
-- [ ] 编写回滚测试。
+- [x] 编写回滚测试。
   - 安装 -> 卸载 -> 确认目录删除或 marker 删除。
-- [ ] 验证任务 6.3。
+- [x] 验证任务 6.3。
   - 命令：`cargo test hooks`
   - 命令：`cargo run -- hermes uninstall-hooks --home /tmp/hermeship-test-home`
-- [ ] 提交任务 6.3。
-  - commit：`feat: 支持 Hermes hook 回滚`
+- [x] 提交任务 6.3。
+  - 记录：随 Milestone 6 阶段提交统一归档。
 
 ## Milestone 7：安装、生命周期与运维 CLI
 
@@ -725,6 +725,20 @@
 ## 运行状态日志
 
 最新记录放在最上方。
+
+### 2026-06-16 - Milestone 6 Hermes Hook Bridge 安装
+
+- [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
+- [x] 已确认启动时工作树干净：`git status --short --branch` 只有分支行；最近提交为 `1ad3c7c`、`026e80c`、`cb4cca8`。
+- [x] 已阅读 `src/cli.rs`、`src/main.rs`、`src/hermes.rs`、`src/client.rs`、`src/daemon.rs`、`src/config.rs`、`tests/fixtures/README.md` 和方案文档 Hermes Hook Bridge 章节。
+- [x] 已先写失败测试并运行 Red：`cargo test hooks` 在实现前失败于缺少 hook 模板常量、安装/卸载 API、`--home`/`--dry-run` CLI 字段和 `uninstall-hooks` 子命令。
+- [x] 已新增 `templates/hermes-hook/HOOK.yaml`，声明 `gateway:startup`、`session:start`、`session:end`、`session:reset`、`agent:start` 与 `agent:end`；`agent:step` 与 `command:*` 默认不安装，避免绕过默认关闭的 Hermes 配置开关。
+- [x] 已新增 `templates/hermes-hook/handler.py`，只使用 Python 标准库，暴露 `handle(event_type, context)`，通过 stdin 调用 `hermeship hermes hook --payload -`，并对 binary missing、子进程失败和 timeout fail-open。
+- [x] 已新增 `src/hooks.rs` installer，支持 fake Hermes home、首次安装、不覆盖、`--force` 覆盖、dry-run 只报告不写盘、返回计划/写入/跳过路径，并写入 `.hermeship-managed.json` 用于安全卸载。
+- [x] 已接入 CLI：`hermeship hermes install-hooks --home <path> --force --dry-run` 与 `hermeship hermes uninstall-hooks --home <path> --dry-run`。
+- [x] 已完成本地 deterministic CLI 验证：`cargo run -- hermes install-hooks --home /tmp/hermeship-test-home --force` 写入 hook 文件；`find /tmp/hermeship-test-home/hooks/hermeship -maxdepth 1 -type f -print` 显示 `HOOK.yaml` 与 `handler.py`；`cargo run -- hermes uninstall-hooks --home /tmp/hermeship-test-home` 删除 Hermeship hook 目录。
+- [x] 已运行验证：`cargo test hooks`（19 passed）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（120 lib tests + 6 bin tests passed）均通过。
+- [x] 已确认本阶段没有实现 release preflight、真实 live verification、Slack sink 或 Hermes plugin/observer；默认测试只使用 fake Hermes home、fake hermeship binary、本地 handler 和本地 CLI。
 
 ### 2026-06-16 - Milestone 5.3 本地端到端 smoke
 
