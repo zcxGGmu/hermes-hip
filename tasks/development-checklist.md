@@ -340,20 +340,20 @@
 
 ### 任务 4.2：Renderer
 
-- [ ] 新建 render 模块。
+- [x] 新建 render 模块。
   - 新建：`src/render/mod.rs`
   - 新建：`src/render/default.rs`
-- [ ] 实现默认 renderer。
+- [x] 实现默认 renderer。
   - 支持：`compact`、`inline`、`alert`、`raw`。
-- [ ] 实现 Hermes 事件渲染。
+- [x] 实现 Hermes 事件渲染。
   - gateway/session/agent/custom。
-- [ ] 实现 template 渲染。
+- [x] 实现 template 渲染。
   - 支持 `{session_id}`、`{platform}`、`{project}`、`{event}` 等上下文 token。
-- [ ] 编写 renderer 测试。
+- [x] 编写 renderer 测试。
   - 覆盖：所有格式、缺字段降级、raw JSON、template token。
-- [ ] 验证任务 4.2。
+- [x] 验证任务 4.2。
   - 命令：`cargo test render`
-- [ ] 提交任务 4.2。
+- [x] 提交任务 4.2。
   - commit：`feat: 增加 Hermes 默认渲染器`
 
 ### 任务 4.3：Dispatcher 与 fake sink
@@ -705,6 +705,23 @@
 ## 运行状态日志
 
 最新记录放在最上方。
+
+### 2026-06-16 - Milestone 4.2 Renderer
+
+- [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
+- [x] 已确认启动时工作树干净：`git status --short --branch` 只有分支行；最近提交为 `b07d880`、`864e7f4`、`7bc2bff`。
+- [x] 已阅读 `src/cli.rs`、`src/main.rs`、`src/config.rs`、`src/events.rs`、`src/event/mod.rs`、`src/event/body.rs`、`src/event/compat.rs`、`src/privacy.rs`、`src/router.rs` 与 `tests/fixtures/README.md`，并参考 `template/clawhip/src/render/default.rs` 确认 renderer 边界。
+- [x] 已先写失败测试并运行 Red：`cargo test render` 在实现前失败于缺少 `DefaultRenderer` 与 `RenderedMessage`；收到代码审查后又补充 raw+template、direct typed free-text 和未批准 template token 回归测试，并确认它们在修复前失败。
+- [x] 已新增 `src/render/mod.rs` 和 `src/render/default.rs`，并在 `src/lib.rs` 导出 `hermeship::render`。
+- [x] 已实现 `Renderer` trait、`DefaultRenderer` 与 `RenderedMessage`，输入为 `EventEnvelope` 和 `ResolvedDelivery`，输出 deterministic 可投递文本。
+- [x] 已支持 `compact`、`inline`、`alert`、`raw` 四种格式，覆盖 Hermes gateway/session/agent/custom 事件、缺字段降级和 `hermes.agent.failed` 安全错误摘要。
+- [x] 已实现安全 template token：`{event}`、`{canonical_kind}`、`{source}`、`{provider}`、`{platform}`、`{session_id}`、`{agent_name}`、`{project}`、`{channel}`；未批准 token 保持原样。
+- [x] 已处理代码审查反馈：`raw` 永远输出 JSON，忽略 template/mention；raw 不直接序列化 typed 自由文本，只输出长度/存在性摘要并清洗 nested payload。
+- [x] 已覆盖测试：所有格式、缺字段降级、raw JSON、template token、route-level `format`/`template`/`mention` 组合、raw+template、direct typed free-text raw 泄漏回归、未批准 token。
+- [x] 已运行验证：`cargo test render`（10 passed）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（74 lib tests + 6 bin tests passed）均通过。
+- [x] 已确认本阶段没有实现 dispatcher、sink、hook bridge install、install/uninstall lifecycle 或 release preflight。
+- [x] 剩余风险：daemon 队列仍只入队不消费；dispatcher 与 fake sink 在 Milestone 4.3 实现，Discord sink 和 live verification 仍在后续 milestone。
+- [x] 提交状态：随本阶段提交 `feat: 增加 Hermes 默认渲染器` 一并完成。
 
 ### 2026-06-16 - Milestone 4.1 Router
 
