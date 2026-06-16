@@ -590,7 +590,7 @@
   - 命令：`cargo test git`
 - [x] 提交任务 8.1。
   - commit：`feat: 增加 git 事件 source`
-  - 记录：提交 hash 待本次提交生成后回填。
+  - 记录：`1536b6a feat: 增加 Git Source 本地事件路径`
 
 ### 任务 8.2：GitHub Source
 
@@ -745,7 +745,7 @@
 - [x] 已更新 release preflight 的公开命令检查，要求 fixture 覆盖 `git commit` 与 `git branch-changed`。
 - [x] 已运行验证：`cargo test git`（11 lib-filtered tests + 2 bin-filtered tests passed）、`cargo test release_preflight`（6 passed）、`cargo run -- release preflight 0.1.0`（本地 checks ok，live verification pending）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（150 lib tests + 10 bin tests passed）均通过。
 - [x] 已确认本阶段没有实现真实 git polling source、GitHub source、tmux source、cron、memory、真实 live verification、Slack sink 或 Hermes plugin/observer。
-- [x] 提交状态：待本次提交生成 hash 后回填。
+- [x] 提交状态：已提交 `1536b6a feat: 增加 Git Source 本地事件路径`。
 
 ### 2026-06-16 - Milestone 7 完成后交接更新
 

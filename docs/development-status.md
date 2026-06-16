@@ -12,7 +12,7 @@
 - 方案文档与执行清单已经拆分：方案文档维护架构和边界，`tasks/development-checklist.md` 和 `tasks/todo.md` 维护可勾选进度。
 - 默认测试策略已经确定：使用本地 fixture、fake sink、fake HTTP、fake Hermes home、fake hermeship binary；真实 Discord/Hermes 只进入 live verification。
 - 当前开发分支：`codex/milestone-1-cli`。
-- 当前最新功能阶段提交：待本次提交生成 hash 后回填。
+- 当前最新功能阶段提交：`1536b6a feat: 增加 Git Source 本地事件路径`。
 - 下次继续开发前必须先运行 `git status --short --branch` 确认工作树，只在预期文档/代码变更上继续。
 - 当前下一步：继续 Milestone 8.2，执行 GitHub Source 本地 deterministic parity 扩展。
 
@@ -28,7 +28,7 @@
 | Milestone 5.1 - 5.3 | 已完成并提交 | Discord sink、sink 失败语义、本地端到端 smoke |
 | Milestone 6 | 已完成并提交 | `f6f98a3 feat: 支持 Hermes hook bridge 安装` |
 | Milestone 7 | 已完成并提交 | `162efcd feat: 增加安装生命周期与发布预检` |
-| Milestone 8.1 | 已完成，待提交 hash 回填 | Git Source 本地 deterministic parity |
+| Milestone 8.1 | 已完成并提交 | `1536b6a feat: 增加 Git Source 本地事件路径` |
 | Milestone 8.2 - 8.4 | 未完成 | GitHub、tmux、cron 与 memory scaffold |
 | Milestone 9 | 未完成 | 文档与 live verification |
 | Milestone 10 | 未完成 | Hermes plugin / observer 研究 |
@@ -271,7 +271,7 @@
 - 已运行 Red：`cargo test git` 在实现前失败于缺少 `source::git` API、`GitCommands`、`Commands::Git` 和 Git typed body variants。
 - 已运行验证：`cargo test git`（11 lib-filtered tests + 2 bin-filtered tests passed）、`cargo test release_preflight`（6 passed）、`cargo run -- release preflight 0.1.0`（本地 checks ok，live verification pending）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（150 lib tests + 10 bin tests passed）。
 - 本阶段没有实现真实 git polling source、GitHub source、tmux source、cron、memory、真实 live verification、Slack sink 或 Hermes plugin/observer。
-- 提交状态：待本次提交生成 hash 后回填。
+- 已提交：`1536b6a feat: 增加 Git Source 本地事件路径`。
 
 ## 未完成
 
@@ -334,7 +334,7 @@
 
 当前状态：
 - 当前分支是 codex/milestone-1-cli。
-- 最新功能阶段提交：待本次提交生成 hash 后回填。
+- 最新功能阶段提交：1536b6a feat: 增加 Git Source 本地事件路径。
 - Milestone 0 已完成并提交：af57c49 docs: 明确 hermeship 完整项目方向。
 - Milestone 1.1 已完成并提交：d03170e chore: 搭建 Hermeship Rust CLI 骨架。
 - Milestone 1.2 已完成并提交：50723af feat: 实现 hermeship 配置模型与 config CLI。
@@ -355,7 +355,7 @@
 - Milestone 6 范围：Hermes Hook Bridge 安装、handler fail-open smoke 和 hook 卸载回滚。
 - Milestone 7 已完成并提交：162efcd feat: 增加安装生命周期与发布预检。
 - Milestone 7 范围：安装、setup、uninstall、本地 service 模板、运维文档和 release preflight。
-- Milestone 8.1 已完成并验证，提交 hash 待本次提交生成后回填。
+- Milestone 8.1 已完成并提交：1536b6a feat: 增加 Git Source 本地事件路径。
 - Milestone 8.1 范围：Git Source 本地 deterministic parity、`hermeship git commit`、`hermeship git branch-changed`、typed Git event、route metadata 和默认渲染。
 - Milestone 8.2 到 Milestone 10 未完成。
 - 已实现 src/events.rs：IncomingEvent、RoutingMetadata、字段别名反序列化、空/null payload 归一，以及 MessageFormat 的单一复用/重导出策略。

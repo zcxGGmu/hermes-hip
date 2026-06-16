@@ -1,6 +1,6 @@
 # Task: Milestone 8.1 - Git Source 本地 deterministic parity
 
-更新时间：2026-06-17 Milestone 8.1 已完成，提交待生成
+更新时间：2026-06-17 Milestone 8.1 已完成并提交
 
 本文件是当前开发工作台。本轮已完成 Milestone 8.1 Git Source 的本地 deterministic parity 路径。Hermeship 仍然是 Hermes-native daemon-first event router，不调用 clawhip runtime，不依赖运行中的 clawhip daemon。
 
@@ -14,7 +14,7 @@
 - 最新功能阶段提交：`162efcd feat: 增加安装生命周期与发布预检`。
 - 最近提交：`475f2a3 docs: 更新 Hermeship Milestone 8 开发入口`、`162efcd feat: 增加安装生命周期与发布预检`、`64e8641 docs: 更新 Hermeship 最新开发状态`。
 - Milestone 0 到 Milestone 7 已完成并提交。
-- Milestone 8.1 已完成并验证，提交 hash 待本次提交生成后回填。
+- Milestone 8.1 已完成并提交：`1536b6a feat: 增加 Git Source 本地事件路径`。
 - Milestone 8.2 到 Milestone 10 未完成。
 
 ## 已完成能力
@@ -119,7 +119,7 @@
   - 更新：`tasks/development-checklist.md`
   - 更新：`tasks/todo.md`
   - 更新：`docs/development-status.md`
-  - commit 信息使用中文，说明变更、验证和影响；提交 hash 待本次提交生成后回填。
+  - commit 信息使用中文，说明变更、验证和影响；功能提交为 `1536b6a feat: 增加 Git Source 本地事件路径`。
 
 ## Review
 
