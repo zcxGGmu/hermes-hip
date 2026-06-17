@@ -604,6 +604,7 @@
   - 命令：`cargo test github`
 - [x] 提交任务 8.2。
   - commit：`feat: 增加 GitHub 事件 source`
+  - 记录：`91d13d8 feat: 完成 GitHub Source 本地确定性路径并修复回归`
 
 ### 任务 8.3：Tmux Source
 
@@ -730,6 +731,15 @@
 
 最新记录放在最上方。
 
+### 2026-06-17 - Milestone 8.2 完成后交接更新
+
+- [x] 已复习 `tasks/lessons.md`，确认阶段完成后必须验证并提交、方案/清单分离、Hermeship 不是 thin adapter。
+- [x] 已确认当前分支为 `codex/milestone-1-cli`，文档更新前工作树干净，最近提交为 `91d13d8 feat: 完成 GitHub Source 本地确定性路径并修复回归`、`9d8b05c docs: 更新 Hermeship Milestone 8.2 交接入口`、`a6bd734 docs: 更新 Hermeship Milestone 8.1 交接状态`。
+- [x] 已更新 `docs/development-status.md`，明确 Milestone 0 到 Milestone 8.2 已完成并提交，Milestone 8.3 到 Milestone 10 未完成，下一入口为 Milestone 8.3 Tmux Source。
+- [x] 已更新 `tasks/todo.md`，将当前工作台切换并固定为 Milestone 8.3 Tmux Source 本地 deterministic parity。
+- [x] 已确认本次只做文档交接更新，不进入 Milestone 8.3 实现，不执行真实 live verification、Slack sink、真实 GitHub/tmux 路径或 Hermes plugin/observer。
+- [x] 本次文档验证：`git diff --check`、过期 8.2/旧功能提交状态搜索、`git status --short --branch`。
+
 ### 2026-06-17 - Milestone 8.2 GitHub Source 本地 deterministic parity
 
 - [x] 已复习 `tasks/lessons.md`、`docs/development-status.md`、方案文档、`tasks/development-checklist.md` 与 `tasks/todo.md`，并确认当前分支为 `codex/milestone-1-cli`。
@@ -744,7 +754,7 @@
 - [x] 已更新公开命令 fixture、release preflight 和方案 CLI 示例，要求覆盖四个 GitHub 公开命令。
 - [x] 已运行验证：`cargo test github`、`cargo test release_preflight`、`cargo run -- release preflight 0.1.0`、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test` 均通过。
 - [x] 已确认本阶段没有实现真实 GitHub API source、GitHub webhook receiver、GitHub credential handling、tmux source、cron、memory、真实 live verification、Slack sink 或 Hermes plugin/observer。
-- [x] 提交状态：随本阶段当前提交完成。
+- [x] 提交状态：已提交 `91d13d8 feat: 完成 GitHub Source 本地确定性路径并修复回归`。
 
 ### 2026-06-17 - Milestone 8.1 完成后交接更新
 
@@ -753,7 +763,7 @@
 - [x] 已确认 Milestone 8.1 Git Source 本地 deterministic parity 已完成并提交，最新功能阶段提交为 `1536b6a feat: 增加 Git Source 本地事件路径`。
 - [x] 已更新 `docs/development-status.md`，明确当前交接工作台已切换到 Milestone 8.2 GitHub Source。
 - [x] 已更新 `tasks/todo.md`，从已完成的 Milestone 8.1 工作台切换为 Milestone 8.2 GitHub Source 执行计划，并保留 8.1 Review。
-- [x] 已确认当前未完成范围为 Milestone 8.2 GitHub Source、Milestone 8.3 tmux、Milestone 8.4 cron/memory、Milestone 9 文档与 live verification、Milestone 10 Hermes plugin/observer。
+- [x] 历史记录：当时未完成范围为 Milestone 8.2 GitHub Source、Milestone 8.3 tmux、Milestone 8.4 cron/memory、Milestone 9 文档与 live verification、Milestone 10 Hermes plugin/observer；其中 Milestone 8.2 已在 `91d13d8` 完成。
 - [x] 本次只做文档交接更新，不进入 Milestone 8.2 实现，不修改功能代码，不执行真实 live verification、Slack sink 或 Hermes plugin/observer。
 - [x] 本次文档验证：`git diff --check`、`git status --short --branch`。
 

@@ -10,9 +10,10 @@
 
 - 当前分支：`codex/milestone-1-cli`。
 - 当前工作树：最近一次交接检查时 `git status --short --branch` 只显示分支行，工作树干净。
-- 文档交接提交：本文件当前更新提交；下次启动以 `git log -3 --oneline` 的最新 docs 提交为准。上一文档交接提交为 `a6bd734 docs: 更新 Hermeship Milestone 8.1 交接状态`。
-- 最新功能阶段：Milestone 8.2 GitHub Source 本地 deterministic parity，本阶段随当前提交完成。
-- 最近提交基线：`a6bd734 docs: 更新 Hermeship Milestone 8.1 交接状态`、`1536b6a feat: 增加 Git Source 本地事件路径`、`475f2a3 docs: 更新 Hermeship Milestone 8 开发入口`。
+- 文档交接提交：本文件当前更新提交；下次启动以 `git log -3 --oneline` 的最新 docs 提交为准。上一文档交接提交为 `9d8b05c docs: 更新 Hermeship Milestone 8.2 交接入口`。
+- 最新功能阶段提交：`91d13d8 feat: 完成 GitHub Source 本地确定性路径并修复回归`。
+- 最新功能阶段：Milestone 8.2 GitHub Source 本地 deterministic parity 已完成并提交。
+- 最近提交基线（本次文档更新前）：`91d13d8 feat: 完成 GitHub Source 本地确定性路径并修复回归`、`9d8b05c docs: 更新 Hermeship Milestone 8.2 交接入口`、`a6bd734 docs: 更新 Hermeship Milestone 8.1 交接状态`。
 - Milestone 0 到 Milestone 8.2 已完成并提交。
 - Milestone 8.3 到 Milestone 10 未完成。
 - 下一入口：Milestone 8.3 Tmux Source。
@@ -187,7 +188,7 @@
 
 ## Review
 
-- Milestone 8.2 GitHub Source 本地 deterministic parity 已实现，随本阶段当前提交完成。
+- Milestone 8.2 GitHub Source 本地 deterministic parity 已实现并提交：`91d13d8 feat: 完成 GitHub Source 本地确定性路径并修复回归`。
 - 已新增 `src/source/github.rs`，提供 issue、PR、check/CI、release 的本地 `IncomingEvent` 构造；本阶段不访问真实 GitHub API、不依赖外网、不读取 token 或 webhook secret。
 - 已新增 typed GitHub body，并让 `github.issue-opened`、`github.pr-opened`、`github.check-failed`、`github.release-published` 进入现有 `IncomingEvent -> EventEnvelope -> Router -> Renderer -> Sink` 管线。
 - 已接入 CLI：`hermeship github issue-opened`、`hermeship github pr-opened`、`hermeship github check-failed`、`hermeship github release-published`，并更新公开命令 fixture 与 release preflight 检查。
