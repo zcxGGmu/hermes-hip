@@ -757,6 +757,17 @@
 
 最新记录放在最上方。
 
+### 2026-06-19 - 最新开发状态与下次启动提示词更新
+
+- [x] 已复习 `tasks/lessons.md`，确认阶段完成后必须验证并提交，且状态入口需要准确区分已完成、未完成和阻塞项。
+- [x] 已确认当前分支为 `codex/milestone-1-cli`，启动时工作树干净；最近提交为 `93aa9ec docs: 完成 Hermes observer plugin 契约研究`、`0d0d354 docs: 记录 Hermeship 本地验证续接状态`、`92790ef docs: 更新 Hermeship 最新开发状态与下次启动提示词`、`589c9e2 docs: 记录 Hermeship 本地验证续接状态`、`3f2e758 docs: 更新 Hermeship 最新开发状态与下次启动提示词`。
+- [x] 已更新 `docs/development-status.md`，明确 Milestone 0 到 8.4、9.1、9.2、10.1 已完成并提交；Milestone 9.3 仍无真实 live pass；Milestone 10.2 未启动。
+- [x] 已更新 `README.md` Current State，明确下一步为 Milestone 10.2 observer plugin scaffold。
+- [x] 已更新 `tasks/todo.md`，将当前工作台切换为“最新开发状态与下次启动提示词更新”。
+- [x] 已确认本轮只做文档状态同步，不执行真实 Discord/Hermes live check，不实现 Slack sink，不创建 Hermes observer plugin scaffold。
+- [x] 已运行验证：状态文档一致性搜索、`git diff --check`、`cargo test release_preflight`（12 passed）、`cargo run -- release preflight 0.1.0`（8 checks ok）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（194 lib tests + 15 bin tests passed）。
+- [x] 已确认 `release preflight` 的 `live verification` ok 只证明 `docs/live-verification.md` 必填字段存在，不证明真实 Discord/Hermes live pass。
+
 ### 2026-06-18 - Milestone 10.1 Observer 契约研究
 
 - [x] 用户已回复 `ok` 确认按“10.1 研究文档优先，然后再实现 10.2 plugin scaffold”的顺序推进。

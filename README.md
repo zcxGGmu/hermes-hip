@@ -13,7 +13,7 @@ Hermeship 不是 clawhip thin adapter：
 
 ## Current State
 
-Milestone 0 到 Milestone 9.2 已完成。Milestone 9.3 已记录真实 live check 未执行原因，但真实 Discord/Hermes live verification 仍未获得 `pass`；该 live pass 已被用户豁免用于进入 Milestone 10。Milestone 10.1 已完成 Hermes observer plugin 契约研究。当前已实现：
+Milestone 0 到 Milestone 9.2 已完成。Milestone 9.3 已记录真实 live check 未执行原因，但真实 Discord/Hermes live verification 仍未获得 `pass`；该 live pass 已被用户豁免用于进入 Milestone 10。Milestone 10.1 已完成 Hermes observer plugin 契约研究；下一步是 Milestone 10.2 observer plugin scaffold。当前已实现：
 
 - Rust CLI、配置模型、质量门禁。
 - daemon `/health`、`/event`、`/api/hermes/hook`。
