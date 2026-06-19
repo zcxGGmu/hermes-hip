@@ -737,25 +737,53 @@
 
 ### 任务 10.2：Observer Plugin MVP
 
-- [ ] 创建 plugin 模板。
+- [x] 创建 plugin 模板。
   - 新建：`templates/hermes-plugin/plugin.yaml`
   - 新建：`templates/hermes-plugin/__init__.py`
-- [ ] 支持 hook。
+- [x] 支持 hook。
+  - `on_session_start`
+  - `on_session_end`
+  - `on_session_finalize`
+  - `on_session_reset`
+  - `pre_api_request`
+  - `post_api_request`
+  - `api_request_error`
+  - `pre_llm_call`
+  - `post_llm_call`
   - `pre_tool_call`
   - `post_tool_call`
-  - `post_llm_call`
-  - `api_request_error`
+  - `pre_approval_request`
+  - `post_approval_response`
   - `subagent_start`
   - `subagent_stop`
-- [ ] 默认隐私保护。
-  - 不转发 request/response body。
-- [ ] 编写 plugin smoke test。
-- [ ] 提交 observer plugin。
+- [x] 默认隐私保护。
+  - 不转发 request/response body、raw prompt、conversation history、shell command、tool output、tool result JSON、child goal 或 child summary。
+- [x] 编写 plugin smoke test。
+  - 覆盖：Python compile、fake ctx hook registration、fake HTTP `/event` payload、disabled env、fail-open、forbidden raw field 不泄漏。
+- [x] 提交 observer plugin。
   - commit：`feat: 增加可选 Hermes observer plugin`
 
 ## 运行状态日志
 
 最新记录放在最上方。
+
+### 2026-06-19 - Milestone 10.2 Observer Plugin MVP scaffold
+
+- [x] 已复习 `tasks/lessons.md`，确认阶段完成后必须验证并提交，且不能把未验证、未完成或无关工作混入阶段提交。
+- [x] 已确认当前分支为 `codex/milestone-1-cli`；启动时工作树干净，最近提交为 `eb64408 docs: 更新 Hermeship 最新开发状态`、`93aa9ec docs: 完成 Hermes observer plugin 契约研究`、`0d0d354 docs: 记录 Hermeship 本地验证续接状态`、`92790ef docs: 更新 Hermeship 最新开发状态与下次启动提示词`、`589c9e2 docs: 记录 Hermeship 本地验证续接状态`。
+- [x] 已阅读本轮指定上下文：`docs/development-status.md`、方案文档、开发清单、当前 todo、`docs/observer-plugin.md`、live verification runbook、README、架构、运维、事件契约和 `src/release_preflight.rs`。
+- [x] 已将 `tasks/todo.md` 切换为本轮“Milestone 10.2 Observer Plugin MVP Scaffold”工作台。
+- [x] 已新增 `templates/hermes-plugin/plugin.yaml` 与 `templates/hermes-plugin/__init__.py`，作为可选 Hermes directory plugin scaffold；默认不自动安装或启用。
+- [x] 已实现 observer callback fail-open safe-field forwarding：使用 `urllib.request` POST `HERMESHIP_DAEMON_URL` 的 `/event`，支持 timeout 和 disabled env；callback 返回 `None`，不注册 middleware，不返回 block/action 指令。
+- [x] 已覆盖 session、API/LLM、tool、approval 和 subagent observer hooks；事件使用 `hermes.observer.*` namespace，通过现有 `Custom` fallback 进入 daemon/router/renderer pipeline。
+- [x] 已扩展 `src/release_preflight.rs`：release preflight 要求 observer plugin 模板存在并包含关键 hook/env/endpoint/隐私契约，且禁止 `/api/hermes/hook`、`transform_tool_result` 和 block action。
+- [x] 已新增 Red/Green 证据：`cargo test release_preflight::tests::preflight_fails_when_observer_plugin_template_is_missing` 在实现前失败于 `assertion failed: !report.ok()`；实现后 `cargo test observer_plugin` 通过。
+- [x] 已新增 Python compile/smoke 覆盖：`python3 -m py_compile templates/hermes-plugin/__init__.py`；`cargo test observer_plugin` 断言 hook 注册、`/event` payload、disabled env、fail-open 和 forbidden raw field 不泄漏。
+- [x] 已按代码审查修复隐私与边界问题：不直接转发 raw `error_message`，只通过 `error_summary` 生成 bounded error summary；`pattern_keys` 加数量/长度边界；observer timeout 加 5 秒上限；`.gitignore` 忽略 `__pycache__/` 和 `*.pyc`。
+- [x] 已更新 `README.md`、`ARCHITECTURE.md`、`docs/operations.md`、`docs/hermes-event-contract.md`、`docs/observer-plugin.md` 和 `docs/development-status.md`，记录 10.2 scaffold、手动启用方式、preflight 覆盖和剩余边界。
+- [x] 本轮未执行真实 Discord/Hermes live check，未新增 `docs/live-verification.md` 真实 pass 结果，未实现 Slack sink，未新增 observer install/enable CLI，未新增 typed Rust observer body。
+- [x] 已运行最终验证：`python3 -m py_compile templates/hermes-plugin/__init__.py`、`cargo test observer_plugin`（3 passed）、`cargo test release_preflight`（15 passed）、`cargo run -- release preflight 0.1.0`（9 checks ok）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（197 lib tests + 15 bin tests passed）。
+- [x] 已提交 Milestone 10.2 observer plugin scaffold。
 
 ### 2026-06-19 - 最新开发状态与下次启动提示词更新
 

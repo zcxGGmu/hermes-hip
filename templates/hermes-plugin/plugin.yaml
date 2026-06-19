@@ -1,0 +1,3 @@
+name: hermeship-observer
+description: Forward Hermes observer hook summaries to the local Hermeship daemon.
+version: 0.1.0

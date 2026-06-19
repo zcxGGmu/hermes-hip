@@ -12,8 +12,9 @@
 - `hermeship hermes install-hooks` / `hermeship hermes uninstall-hooks`：安装和卸载 Hermes gateway hook bridge。
 - `hermeship uninstall`：保留或显式删除本地配置、状态和 hook。
 - `hermeship release preflight`：本地发布一致性检查。
+- `templates/hermes-plugin/`：可选 Hermes observer plugin scaffold，可手动复制到 Hermes plugin 目录。
 
-当前不自动安装真实 systemd/launchd service，不执行真实 Discord/Hermes live verification，不实现 Slack sink 或 Hermes plugin/observer。
+当前不自动安装真实 systemd/launchd service，不执行真实 Discord/Hermes live verification，不实现 Slack sink，也不自动安装或启用 Hermes observer plugin。
 
 ## Install
 
@@ -178,6 +179,47 @@ hermeship hermes uninstall-hooks --home ~/.hermes
 
 Hermeship 只删除 `.hermeship-managed.json` marker 记录且 checksum 未变化的文件。用户修改过的 hook 文件会保留，需要人工检查。
 
+## Hermes Observer Plugin
+
+可选 observer plugin 模板位于：
+
+```text
+templates/hermes-plugin/
+  plugin.yaml
+  __init__.py
+```
+
+手动安装目标：
+
+```text
+~/.hermes/plugins/hermeship-observer/
+  plugin.yaml
+  __init__.py
+```
+
+启用：
+
+```bash
+hermes plugins enable hermeship-observer
+```
+
+如果 `hermes plugins list` 显示的 canonical key 不同，使用 Hermes 输出的 key 启用。
+
+配置环境变量：
+
+- `HERMESHIP_DAEMON_URL`：默认 `http://127.0.0.1:25295`。
+- `HERMESHIP_OBSERVER_TIMEOUT_SECS`：默认 `2`。
+- `HERMESHIP_OBSERVER_DISABLED`：truthy value 会跳过投递。
+
+observer plugin 只注册观察类 hook，callback 返回 `None`，并向 Hermeship daemon `POST /event` 发送 `hermes.observer.*` summary event。它不使用 `/api/hermes/hook`，不注册 middleware，不返回 block/action 指令，不转发 raw prompt、conversation history、request/response body、shell command、tool output、child goal 或 child summary。
+
+本地检查：
+
+```bash
+python3 -m py_compile templates/hermes-plugin/__init__.py
+cargo test observer_plugin
+```
+
 ## Smoke Commands
 
 发送 custom message：
@@ -304,6 +346,7 @@ Preflight 本地检查：
 - 公开 CLI fixture。
 - README、方案文档和 operations 中的公开命令。
 - Hermes hook 模板。
+- Hermes observer plugin 模板。
 - fixture policy。
 - service 模板。
 - live verification 文档状态。

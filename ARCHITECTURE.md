@@ -17,14 +17,14 @@ Hermeship is a Hermes-native daemon-first event router. It mirrors the broad sha
 - No call-through to a running `clawhip` daemon.
 - No notification messages injected into Hermes conversations.
 - No Slack sink in the current milestone.
-- No runtime Hermes observer plugin scaffold in Milestone 10.1; this stage defines the contract only.
+- No automatic Hermes observer plugin install/enable CLI in Milestone 10.2; the current deliverable is an optional template.
 - No real GitHub polling, real tmux watch, real scheduler or service-manager automation in the completed milestones.
 
 ## Data Flow
 
 ```text
 Hermes gateway hook
-Hermes observer plugin (planned)
+Hermes observer plugin (optional template)
 CLI send/emit
 local git/GitHub/tmux/cron commands
         |
@@ -107,6 +107,7 @@ CLI commands such as `send`, `emit`, `hermes hook`, `git`, `github`, `tmux` and 
 | `src/source/` | Git/GitHub/tmux deterministic source builders |
 | `src/cron.rs` | Configured cron run event builder |
 | `src/memory.rs` | Local filesystem memory scaffold |
+| `templates/hermes-plugin/` | Optional Hermes observer plugin scaffold |
 
 ## Event Model
 
@@ -247,6 +248,28 @@ Installed files:
 
 The bridge is fail-open by design. Hermeship failures must not stop Hermes gateway execution.
 
+## Hermes Observer Plugin
+
+Milestone 10.2 adds an optional Hermes directory plugin scaffold:
+
+```text
+~/.hermes/plugins/hermeship-observer/
+  plugin.yaml
+  __init__.py
+```
+
+The repository template lives in `templates/hermes-plugin/`. Operators enable it manually with:
+
+```bash
+hermes plugins enable hermeship-observer
+```
+
+The plugin registers observer hooks only and posts generic `IncomingEvent` payloads to `POST /event`. It does not use `/api/hermes/hook`, because that endpoint is specific to gateway hook envelopes.
+
+Observer events use the `hermes.observer.*` namespace and currently fall through the existing `Custom` event body path. This avoids expanding typed Rust event bodies before real observer usage stabilizes.
+
+The plugin forwards only safe fields, counts, lengths, statuses and bounded summaries. It must not forward raw prompts, conversation history, request/response bodies, shell commands, tool result bodies, child goals or child summaries. Every callback returns `None`; daemon failures, serialization failures and HTTP timeouts fail open.
+
 ## Privacy
 
 Privacy protection is part of ingress and rendering:
@@ -286,6 +309,7 @@ Default verification is local and deterministic:
 ```bash
 cargo test release_preflight
 cargo run -- release preflight 0.1.0
+python3 -m py_compile templates/hermes-plugin/__init__.py
 cargo fmt --all -- --check
 cargo clippy --all-targets -- -D warnings
 cargo test

@@ -10,7 +10,7 @@ Hermeship 接收三类公开事件输入：
 - `POST /api/hermes/hook`：Hermes hook envelope。
 - `hermeship hermes hook --payload <json-or->`：CLI wrapper，最终 POST 到 daemon。
 
-`hermeship emit` 和 source CLI 也会构造 `IncomingEvent` 并投递 `/event`。
+`hermeship emit`、source CLI 和可选 Hermes observer plugin 也会构造 `IncomingEvent` 并投递 `/event`。Observer plugin payload 必须使用 `hermes.observer.*` namespace，并通过 unknown-event `Custom` fallback 保留已清洗 payload。
 
 ## Hermes Hook Envelope
 

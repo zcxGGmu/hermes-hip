@@ -13,7 +13,7 @@ Hermeship 不是 clawhip thin adapter：
 
 ## Current State
 
-Milestone 0 到 Milestone 9.2 已完成。Milestone 9.3 已记录真实 live check 未执行原因，但真实 Discord/Hermes live verification 仍未获得 `pass`；该 live pass 已被用户豁免用于进入 Milestone 10。Milestone 10.1 已完成 Hermes observer plugin 契约研究；下一步是 Milestone 10.2 observer plugin scaffold。当前已实现：
+Milestone 0 到 Milestone 9.2 已完成。Milestone 9.3 已记录真实 live check 未执行原因，但真实 Discord/Hermes live verification 仍未获得 `pass`；该 live pass 已被用户豁免用于进入 Milestone 10。Milestone 10.1 已完成 Hermes observer plugin 契约研究，Milestone 10.2 已新增可选 observer plugin scaffold。当前已实现：
 
 - Rust CLI、配置模型、质量门禁。
 - daemon `/health`、`/event`、`/api/hermes/hook`。
@@ -28,18 +28,19 @@ Milestone 0 到 Milestone 9.2 已完成。Milestone 9.3 已记录真实 live che
 - live verification runbook。
 - Milestone 9.3 `blocked`/`not_run` live verification 记录。
 - Milestone 10.1 Hermes observer plugin contract research in `docs/observer-plugin.md`.
+- Optional Hermes observer plugin scaffold in `templates/hermes-plugin/`.
 
 仍未完成：
 
 - 真实 Discord/Hermes live verification pass。
 - Slack sink。
-- Hermes observer plugin scaffold。
+- Hermes observer plugin install/enable CLI automation.
 - 真实 GitHub API source、真实 tmux watch、真实 scheduler、真实 service manager 自动安装。
 
 ## Architecture
 
 ```text
-Hermes gateway hooks / Hermes observer plugin (planned) / CLI / git / GitHub / tmux / cron
+Hermes gateway hooks / optional Hermes observer plugin / CLI / git / GitHub / tmux / cron
   -> source ingress
   -> IncomingEvent
   -> typed EventEnvelope
@@ -197,6 +198,38 @@ hermeship hermes uninstall-hooks --home ~/.hermes
 
 Hermeship 只通过 `.hermeship-managed.json` marker 删除自己管理且未被用户修改的 hook 文件。
 
+## Hermes Observer Plugin
+
+Milestone 10.2 ships an optional Hermes directory plugin template:
+
+```text
+templates/hermes-plugin/
+  plugin.yaml
+  __init__.py
+```
+
+Install it manually as:
+
+```text
+~/.hermes/plugins/hermeship-observer/
+  plugin.yaml
+  __init__.py
+```
+
+Then enable it from Hermes:
+
+```bash
+hermes plugins enable hermeship-observer
+```
+
+The plugin registers observer hooks only, returns `None`, posts safe summary events to `POST /event`, and fail-opens if Hermeship is unavailable. It uses:
+
+- `HERMESHIP_DAEMON_URL`, default `http://127.0.0.1:25295`.
+- `HERMESHIP_OBSERVER_TIMEOUT_SECS`, default `2`.
+- `HERMESHIP_OBSERVER_DISABLED`, truthy value disables delivery.
+
+It does not forward raw prompts, conversation history, request/response bodies, shell commands, tool results, child goals, or child summaries.
+
 ## Send And Emit
 
 发送 custom message：
@@ -319,7 +352,7 @@ Results must be recorded in `docs/live-verification.md` without tokens, cookies,
 hermeship release preflight 0.1.0
 ```
 
-Preflight checks local release consistency: Cargo version, `Cargo.lock`, public CLI fixture, docs command coverage, hook templates, fixture policy, service template and live verification status. Missing live verification is `pending`, not a default local failure.
+Preflight checks local release consistency: Cargo version, `Cargo.lock`, public CLI fixture, docs command coverage, hook templates, observer plugin template, fixture policy, service template and live verification status. Missing live verification is `pending`, not a default local failure.
 
 ## Development Gates
 

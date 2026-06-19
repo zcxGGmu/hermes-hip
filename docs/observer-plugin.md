@@ -211,7 +211,7 @@ and a local smoke test that imports the template with a fake HTTP client or monk
 
 ## Open Follow-ups For Milestone 10.2
 
-- Decide whether `templates/hermes-plugin/__init__.py` should POST directly with Python standard library `urllib.request` or shell out to `hermeship emit`.
+- Decided for 10.2: `templates/hermes-plugin/__init__.py` POSTs directly with Python standard library `urllib.request` to keep Hermes plugin delivery independent from the Hermeship CLI binary path.
 - Decide whether `hermeship hermes install-hooks` should later gain a sibling `hermeship hermes install-plugin`.
 - Decide whether typed Rust observer bodies are needed after plugin payloads stabilize.
-- Decide whether release preflight should require observer plugin docs and template files once Milestone 10.2 lands.
+- Decided for 10.2: release preflight requires observer plugin template files and contract keywords once the scaffold lands.

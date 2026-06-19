@@ -188,6 +188,7 @@ pub fn run_preflight(repo_root: &Path, raw_version: &str) -> Result<PreflightRep
         check_public_commands(repo_root),
         check_docs_commands(repo_root),
         check_hook_templates(repo_root),
+        check_observer_plugin_template(repo_root),
         check_fixture_policy(repo_root),
         check_service_template(repo_root),
         check_live_verification(repo_root),
@@ -363,6 +364,105 @@ fn check_hook_templates(repo_root: &Path) -> CheckResult {
     }
 }
 
+fn check_observer_plugin_template(repo_root: &Path) -> CheckResult {
+    let manifest_path = repo_root.join("templates/hermes-plugin/plugin.yaml");
+    let init_path = repo_root.join("templates/hermes-plugin/__init__.py");
+    let manifest = fs::read_to_string(&manifest_path);
+    let init = fs::read_to_string(&init_path);
+    let (manifest, init) = match (manifest, init) {
+        (Ok(manifest), Ok(init)) => (manifest, init),
+        (manifest, init) => {
+            return CheckResult::fail(
+                "observer plugin template",
+                format!(
+                    "missing template file(s): plugin.yaml={}, __init__.py={}",
+                    manifest
+                        .err()
+                        .map(|error| error.to_string())
+                        .unwrap_or_default(),
+                    init.err()
+                        .map(|error| error.to_string())
+                        .unwrap_or_default()
+                ),
+            );
+        }
+    };
+    let manifest_required = ["name: hermeship-observer"];
+    let init_required = [
+        "def register(ctx):",
+        "ctx.register_hook",
+        "on_session_start",
+        "on_session_end",
+        "on_session_finalize",
+        "on_session_reset",
+        "pre_api_request",
+        "post_api_request",
+        "api_request_error",
+        "pre_llm_call",
+        "post_llm_call",
+        "pre_tool_call",
+        "post_tool_call",
+        "pre_approval_request",
+        "post_approval_response",
+        "subagent_start",
+        "subagent_stop",
+        "hermes.observer.tool.started",
+        "hermes.observer.tool.finished",
+        "hermes.observer.api.request.failed",
+        "HERMESHIP_DAEMON_URL",
+        "HERMESHIP_OBSERVER_TIMEOUT_SECS",
+        "HERMESHIP_OBSERVER_DISABLED",
+        "/event",
+        "provider",
+        "source",
+        "observer_schema_version",
+        "urllib.request",
+        "return None",
+    ];
+    let mut missing = manifest_required
+        .into_iter()
+        .filter(|needle| !manifest.contains(needle))
+        .map(|needle| format!("plugin.yaml:{needle}"))
+        .collect::<Vec<_>>();
+    missing.extend(
+        init_required
+            .into_iter()
+            .filter(|needle| !init.contains(needle))
+            .map(|needle| format!("__init__.py:{needle}")),
+    );
+    let forbidden = [
+        "transform_tool_result",
+        "\"action\": \"block\"",
+        "\"action\":\"block\"",
+        "'action': 'block'",
+        "'action':'block'",
+        "register_middleware",
+        "ctx.register_middleware",
+        "/api/hermes/hook",
+        "DISCORD_TOKEN",
+        "HERMESHIP_DISCORD_TOKEN",
+    ];
+    let present_forbidden = forbidden
+        .into_iter()
+        .filter(|needle| init.contains(needle) || manifest.contains(needle))
+        .collect::<Vec<_>>();
+    if missing.is_empty() && present_forbidden.is_empty() {
+        CheckResult::pass(
+            "observer plugin template",
+            "Hermes observer plugin template is bundled",
+        )
+    } else {
+        let mut details = Vec::new();
+        if !missing.is_empty() {
+            details.push(format!("missing {}", missing.join(", ")));
+        }
+        if !present_forbidden.is_empty() {
+            details.push(format!("forbidden {}", present_forbidden.join(", ")));
+        }
+        CheckResult::fail("observer plugin template", details.join("; "))
+    }
+}
+
 fn check_fixture_policy(repo_root: &Path) -> CheckResult {
     let path = repo_root.join("tests/fixtures/README.md");
     let raw = match fs::read_to_string(&path) {
@@ -462,6 +562,7 @@ fn read_required(path: &Path) -> Result<String> {
 mod tests {
     use std::fs;
     use std::path::{Path, PathBuf};
+    use std::process::Command;
 
     use super::*;
 
@@ -483,6 +584,10 @@ version = "1.0.99"
 name = "hermeship"
 version = "0.1.0"
 "#;
+    const OBSERVER_PLUGIN_MANIFEST_TEMPLATE: &str =
+        include_str!("../templates/hermes-plugin/plugin.yaml");
+    const OBSERVER_PLUGIN_INIT_TEMPLATE: &str =
+        include_str!("../templates/hermes-plugin/__init__.py");
 
     #[test]
     fn normalize_version_accepts_common_tag_shapes() {
@@ -704,6 +809,280 @@ version = "0.1.0"
     }
 
     #[test]
+    fn preflight_fails_when_observer_plugin_template_is_missing() {
+        let root = temp_dir("preflight-observer-plugin-fail");
+        write_project_fixture(
+            &root,
+            Some(ProjectFixtureOverrides {
+                observer_plugin_manifest: Some("name: other\n"),
+                observer_plugin_init: Some("def register(ctx):\n    pass\n"),
+                ..ProjectFixtureOverrides::default()
+            }),
+        );
+
+        let report = run_preflight(&root, "0.1.0").unwrap();
+
+        assert!(!report.ok());
+        assert!(report.render().contains("observer plugin template"));
+
+        remove_temp_dir(&root);
+    }
+
+    #[test]
+    fn observer_plugin_template_compiles_with_python() {
+        let output = Command::new("python3")
+            .arg("-m")
+            .arg("py_compile")
+            .arg(observer_plugin_init_path())
+            .output()
+            .unwrap();
+
+        assert!(
+            output.status.success(),
+            "observer plugin did not compile: stdout={} stderr={}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+
+    #[test]
+    fn observer_plugin_smoke_registers_hooks_and_forwards_safe_fields() {
+        let script = format!(
+            r#"
+import importlib.util
+import json
+import os
+
+spec = importlib.util.spec_from_file_location("hermeship_observer_test", {plugin_path:?})
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+events = []
+
+class FakeResponse:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        return False
+
+    def read(self):
+        return b"ok"
+
+def fake_urlopen(request, timeout=None):
+    events.append({{
+        "url": request.full_url,
+        "method": request.get_method(),
+        "content_type": request.get_header("Content-type"),
+        "timeout": timeout,
+        "body": request.data.decode("utf-8"),
+    }})
+    return FakeResponse()
+
+module.urllib.request.urlopen = fake_urlopen
+os.environ["HERMESHIP_DAEMON_URL"] = "http://127.0.0.1:25295/"
+os.environ["HERMESHIP_OBSERVER_TIMEOUT_SECS"] = "999999"
+os.environ.pop("HERMESHIP_OBSERVER_DISABLED", None)
+
+class FakeContext:
+    def __init__(self):
+        self.hooks = {{}}
+
+    def register_hook(self, name, callback):
+        self.hooks[name] = callback
+
+ctx = FakeContext()
+assert module.register(ctx) is None
+expected_hooks = {{
+    "on_session_start",
+    "on_session_end",
+    "on_session_finalize",
+    "on_session_reset",
+    "pre_api_request",
+    "post_api_request",
+    "api_request_error",
+    "pre_llm_call",
+    "post_llm_call",
+    "pre_tool_call",
+    "post_tool_call",
+    "pre_approval_request",
+    "post_approval_response",
+    "subagent_start",
+    "subagent_stop",
+}}
+assert set(ctx.hooks) == expected_hooks, sorted(set(ctx.hooks) ^ expected_hooks)
+assert "transform_tool_result" not in ctx.hooks
+
+assert ctx.hooks["pre_tool_call"]({{
+    "session_id": "session-1",
+    "task_id": "task-1",
+    "turn_id": "turn-1",
+    "api_request_id": "api-1",
+    "tool_call_id": "tool-1",
+    "tool_name": "terminal",
+    "arguments": {{"path": "/tmp/demo", "mode": "read"}},
+    "command": "RAW_COMMAND_DO_NOT_FORWARD",
+    "tool_result": "RAW_TOOL_RESULT_DO_NOT_FORWARD",
+    "request": {{"body": "RAW_REQUEST_DO_NOT_FORWARD"}},
+}}) is None
+assert ctx.hooks["post_tool_call"]({{
+    "session_id": "session-1",
+    "tool_call_id": "tool-1",
+    "tool_name": "terminal",
+    "status": "ok",
+    "duration_ms": 42,
+    "result": "RAW_RESULT_DO_NOT_FORWARD",
+}}) is None
+assert ctx.hooks["post_llm_call"]({{
+    "session_id": "session-1",
+    "platform": "telegram",
+    "model": "synthetic-model",
+    "response": "RAW_RESPONSE_DO_NOT_FORWARD",
+}}) is None
+assert ctx.hooks["api_request_error"]({{
+    "session_id": "session-1",
+    "task_id": "task-1",
+    "turn_id": "turn-1",
+    "api_request_id": "api-1",
+    "provider": "synthetic-provider",
+    "model": "synthetic-model",
+    "api_mode": "chat",
+    "api_call_count": 3,
+    "error_message": "RAW_ERROR_MESSAGE_DO_NOT_FORWARD",
+    "error_summary": "bounded error summary",
+    "error": RuntimeError("RAW_ERROR_BODY_DO_NOT_FORWARD"),
+    "duration_ms": 7,
+}}) is None
+assert ctx.hooks["post_tool_call"]({{
+    "session_id": "session-1",
+    "tool_call_id": "tool-2",
+    "tool_name": "terminal",
+    "status": "failed",
+    "error_message": "RAW_TOOL_ERROR_MESSAGE_DO_NOT_FORWARD",
+    "error_summary": "tool failed safely",
+    "result": "RAW_FAILED_TOOL_RESULT_DO_NOT_FORWARD",
+}}) is None
+assert ctx.hooks["subagent_start"]({{
+    "parent_session_id": "parent-session",
+    "parent_turn_id": "parent-turn",
+    "parent_subagent_id": "parent-subagent",
+    "child_session_id": "child-session",
+    "child_subagent_id": "child-subagent",
+    "child_role": "reviewer",
+    "child_goal": "RAW_CHILD_GOAL_DO_NOT_FORWARD",
+}}) is None
+assert ctx.hooks["pre_approval_request"]({{
+    "session_key": "approval-session",
+    "surface": "terminal",
+    "pattern_key": "shell-command",
+    "pattern_keys": [
+        "pattern-" + str(index) + "-RAW_PATTERN_KEY_SHOULD_BE_BOUNDED_" + ("x" * 80)
+        for index in range(20)
+    ],
+    "description": "RAW_APPROVAL_DESCRIPTION_DO_NOT_FORWARD",
+    "command": "RAW_APPROVAL_COMMAND_DO_NOT_FORWARD",
+    "turn_id": "turn-approval",
+    "tool_call_id": "tool-approval",
+}}) is None
+assert ctx.hooks["subagent_stop"]({{
+    "parent_session_id": "parent-session",
+    "parent_turn_id": "parent-turn",
+    "child_session_id": "child-session",
+    "child_role": "reviewer",
+    "child_status": "done",
+    "child_summary": "RAW_CHILD_SUMMARY_DO_NOT_FORWARD",
+    "duration_ms": 9,
+}}) is None
+
+payloads = [json.loads(event["body"]) for event in events]
+assert any(payload["type"] == "hermes.observer.tool.started" for payload in payloads)
+assert any(payload["type"] == "hermes.observer.tool.finished" for payload in payloads)
+assert any(payload["type"] == "hermes.observer.llm.finished" for payload in payloads)
+assert any(payload["type"] == "hermes.observer.api.request.failed" for payload in payloads)
+assert any(payload["type"] == "hermes.observer.approval.requested" for payload in payloads)
+assert any(payload["type"] == "hermes.observer.subagent.started" for payload in payloads)
+assert any(payload["type"] == "hermes.observer.subagent.finished" for payload in payloads)
+
+for event in events:
+    assert event["url"] == "http://127.0.0.1:25295/event"
+    assert "/api/hermes/hook" not in event["url"]
+    assert event["method"] == "POST"
+    assert event["content_type"] == "application/json"
+    assert event["timeout"] == 5.0
+
+encoded = json.dumps(payloads, sort_keys=True)
+for forbidden in [
+    "RAW_COMMAND_DO_NOT_FORWARD",
+    "RAW_TOOL_RESULT_DO_NOT_FORWARD",
+    "RAW_REQUEST_DO_NOT_FORWARD",
+    "RAW_RESULT_DO_NOT_FORWARD",
+    "RAW_RESPONSE_DO_NOT_FORWARD",
+    "RAW_ERROR_MESSAGE_DO_NOT_FORWARD",
+    "RAW_ERROR_BODY_DO_NOT_FORWARD",
+    "RAW_TOOL_ERROR_MESSAGE_DO_NOT_FORWARD",
+    "RAW_FAILED_TOOL_RESULT_DO_NOT_FORWARD",
+    "RAW_CHILD_GOAL_DO_NOT_FORWARD",
+    "RAW_APPROVAL_DESCRIPTION_DO_NOT_FORWARD",
+    "RAW_APPROVAL_COMMAND_DO_NOT_FORWARD",
+    "RAW_CHILD_SUMMARY_DO_NOT_FORWARD",
+]:
+    assert forbidden not in encoded, forbidden
+
+tool_started = next(payload for payload in payloads if payload["type"] == "hermes.observer.tool.started")
+assert tool_started["payload"]["provider"] == "hermes"
+assert tool_started["payload"]["source"] == "plugin"
+assert tool_started["payload"]["observer_schema_version"] == 1
+assert tool_started["payload"]["arg_keys"] == ["mode", "path"]
+assert tool_started["payload"]["arg_key_count"] == 2
+assert isinstance(tool_started["payload"]["arg_chars"], int)
+api_failed = next(payload for payload in payloads if payload["type"] == "hermes.observer.api.request.failed")
+assert api_failed["payload"]["error_message"] == "bounded error summary"
+tool_failed = [
+    payload for payload in payloads
+    if payload["type"] == "hermes.observer.tool.finished"
+    and payload["payload"].get("tool_call_id") == "tool-2"
+][0]
+assert tool_failed["payload"]["error_message"] == "tool failed safely"
+approval_requested = next(payload for payload in payloads if payload["type"] == "hermes.observer.approval.requested")
+assert approval_requested["payload"]["description_chars"] == len("RAW_APPROVAL_DESCRIPTION_DO_NOT_FORWARD")
+assert approval_requested["payload"]["command_chars"] == len("RAW_APPROVAL_COMMAND_DO_NOT_FORWARD")
+assert approval_requested["payload"]["pattern_key_count"] == 20
+assert len(approval_requested["payload"]["pattern_keys"]) == 16
+assert all(len(value) <= 64 for value in approval_requested["payload"]["pattern_keys"])
+
+count_before_disabled = len(events)
+os.environ["HERMESHIP_OBSERVER_DISABLED"] = "1"
+assert ctx.hooks["pre_tool_call"]({{"session_id": "disabled"}}) is None
+assert len(events) == count_before_disabled
+
+def failing_urlopen(request, timeout=None):
+    raise OSError("RAW_FAIL_OPEN_SECRET_DO_NOT_FORWARD")
+
+module.urllib.request.urlopen = failing_urlopen
+os.environ.pop("HERMESHIP_OBSERVER_DISABLED", None)
+assert ctx.hooks["pre_tool_call"]({{"session_id": "fail-open"}}) is None
+"#,
+            plugin_path = observer_plugin_init_path().display().to_string()
+        );
+        let output = Command::new("python3")
+            .arg("-c")
+            .arg(script)
+            .output()
+            .unwrap();
+
+        assert!(
+            output.status.success(),
+            "observer plugin smoke failed: stdout={} stderr={}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(
+            !String::from_utf8_lossy(&output.stderr).contains("RAW_FAIL_OPEN_SECRET"),
+            "fail-open diagnostic leaked raw exception detail"
+        );
+    }
+
+    #[test]
     fn preflight_fails_when_operations_doc_uses_plaintext_token_arg() {
         let root = temp_dir("preflight-operations-fail");
         write_project_fixture(
@@ -729,6 +1108,8 @@ version = "0.1.0"
         readme: Option<&'static str>,
         public_commands: Option<&'static str>,
         hook_manifest: Option<&'static str>,
+        observer_plugin_manifest: Option<&'static str>,
+        observer_plugin_init: Option<&'static str>,
         operations: Option<&'static str>,
     }
 
@@ -769,6 +1150,18 @@ version = "0.1.0"
             "def handle(event_type, context):\n    pass\n",
         );
         write(
+            root.join("templates/hermes-plugin/plugin.yaml"),
+            overrides
+                .observer_plugin_manifest
+                .unwrap_or(OBSERVER_PLUGIN_MANIFEST_TEMPLATE),
+        );
+        write(
+            root.join("templates/hermes-plugin/__init__.py"),
+            overrides
+                .observer_plugin_init
+                .unwrap_or(OBSERVER_PLUGIN_INIT_TEMPLATE),
+        );
+        write(
             root.join("deploy/hermeship.service"),
             "[Service]\nEnvironment=HERMESHIP_CONFIG=%h/.hermeship/config.toml\nExecStart=%h/.cargo/bin/hermeship start\n",
         );
@@ -792,5 +1185,9 @@ version = "0.1.0"
 
     fn remove_temp_dir(path: &Path) {
         let _ = fs::remove_dir_all(path);
+    }
+
+    fn observer_plugin_init_path() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("templates/hermes-plugin/__init__.py")
     }
 }
