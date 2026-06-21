@@ -5,19 +5,18 @@
   <a href="./README.en.md"><img alt="English" src="https://img.shields.io/badge/Language-English-8c6f5a?style=for-the-badge"></a>
 </p>
 
-Hermeship 是一个 Hermes-native、daemon-first 的事件通知路由器。它参考 `/Users/zq/Desktop/ai-projs/posp/template/clawhip` 的工程形态和运行架构，但拥有自己的 Hermes 事件契约、Rust daemon、路由、渲染和投递实现。
+Hermeship 是一个面向 Hermes 运行环境的独立、daemon-first 事件通知路由器。它拥有自己的 Hermes 事件契约、Rust daemon、路由、渲染、投递和发布验证流程。
 
 ## 项目定位
 
 Hermeship 从 Hermes gateway hooks、可选 Hermes observer plugin、CLI 和本地 deterministic source 命令接收事件，将它们规范化为 typed event envelope，经隐私清洗、队列、dispatcher、router、renderer 和 sink 投递到 Discord 等通知渠道。
 
-Hermeship 不是 `clawhip` 的 thin adapter：
+Hermeship 的公开运行边界：
 
-- 不调用 `clawhip` binary。
-- 不依赖运行中的 `clawhip` daemon。
 - 不修改 Hermes 核心。
 - 不把通知消息写回 Hermes 对话上下文。
 - 默认不启用 observer plugin，必须由 operator 显式安装并在 Hermes 中手动启用。
+- 默认测试和 source 命令走本地 deterministic 路径；真实 Discord/Hermes 验证独立记录。
 
 ## 图表
 

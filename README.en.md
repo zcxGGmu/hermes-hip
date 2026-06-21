@@ -5,21 +5,18 @@
   <a href="./README.en.md"><img alt="English" src="https://img.shields.io/badge/Language-English-8c6f5a?style=for-the-badge"></a>
 </p>
 
-Hermeship is a Hermes-native, daemon-first event notification router. It follows the architecture shape of `template/clawhip`, but owns its own Hermes contracts, Rust daemon, routing, rendering, and delivery runtime.
+Hermeship is an independent, Hermes-native, daemon-first event notification router. It owns its Hermes event contracts, Rust daemon, routing, rendering, delivery runtime, and release verification flow.
 
 ## What Hermeship Is
 
 Hermeship receives events from Hermes gateway hooks, an optional Hermes observer plugin, CLI commands, and local deterministic source commands. It normalizes those events into typed envelopes, sanitizes payloads, routes deliveries, renders safe summaries, and sends them through sinks such as Discord.
 
-It is not a `clawhip` runtime adapter:
+Operational boundaries:
 
-- It does not call the `clawhip` binary.
-- It does not depend on a running `clawhip` daemon.
 - It does not modify Hermes core.
 - It does not write notification messages back into Hermes conversations.
 - It does not auto-enable the observer plugin.
-
-`template/clawhip` is used as an architecture and documentation reference only.
+- Default tests and source commands use local deterministic paths; real Discord/Hermes verification is tracked separately.
 
 ## Diagrams
 

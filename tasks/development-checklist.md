@@ -824,6 +824,15 @@
 
 最新记录放在最上方。
 
+### 2026-06-21 - README 独立叙述优化
+
+- [x] 已按用户反馈优化公开 README 定位：`README.md` 和 `README.en.md` 不再出现 `clawhip`、`template/clawhip`、thin adapter 或 runtime adapter 相关表述。
+- [x] 已将 README 开头改为正向独立叙述：Hermeship 是独立 Hermes-native daemon-first 事件通知路由器，拥有自己的事件契约、daemon、路由、渲染、投递和发布验证流程。
+- [x] 已保留关键能力边界声明：真实 Discord/Hermes live pass 未完成、`release preflight` 不证明真实 live pass、Slack sink 不在默认范围、observer plugin 需要手动启用、source 命令仍是 deterministic-only。
+- [x] 已更新 `tasks/lessons.md`，记录“公开 README 必须是 Hermeship 独立叙述”的规则。
+- [x] 本轮只修改 README 与状态记录，不修改功能代码，不执行真实 Discord/Hermes live check，不实现 Slack sink，不自动启用 Hermes observer plugin。
+- [x] 已运行验证：`rg -n -i "clawhip|template/clawhip|thin adapter|runtime adapter" README.md README.en.md` 无匹配，`rg -n -i "claw" README.md README.en.md` 无匹配，关键边界声明检查通过，`python3 -m py_compile templates/hermes-plugin/__init__.py`，`cargo fmt --all -- --check`，`cargo test observer_plugin`（13 passed），`cargo test release_preflight`（16 passed），`cargo run -- release preflight 0.1.0`（9 checks ok，`live verification` 只证明记录字段存在），`cargo clippy --all-targets -- -D warnings`，`cargo test`（221 lib tests + 15 bin tests + doctests passed），`git diff --check`。
+
 ### 2026-06-21 - README 语言切换修正
 
 - [x] 已按用户反馈修正 README 多语言结构：根 `README.md` 保留中文入口，新增 `README.en.md` 作为英文入口。

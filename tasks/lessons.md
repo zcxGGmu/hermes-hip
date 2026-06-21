@@ -28,3 +28,10 @@
 - 后续新增或重写多语言 README 时，默认采用分文件入口：根 `README.md` 放中文，`README.en.md` 放英文。
 - 两个 README 顶部都应提供清晰语言切换按钮或链接，避免用户需要在同一文件里上下滚动查找另一种语言。
 - 更新 README 语言结构时，要保留真实能力边界声明，不能因为拆分语言而丢失 live verification、Slack sink、observer plugin 手动启用等限制。
+
+## 2026-06-21: 公开 README 必须是 Hermeship 独立叙述
+
+- 用户纠正：README 不要出现和 clawhip 相关的内容；Hermeship 对外应呈现为完全独立的项目。
+- 后续编辑 `README.md` 和 `README.en.md` 时，不要写 `clawhip`、`template/clawhip`、adapter、thin adapter、runtime adapter 等关联表述。
+- 内部开发计划可以保留历史参考来源和架构演进记录，但公开 README 应只描述 Hermeship 自身目标、架构、能力边界、安装配置、验证和运维方式。
+- 移除外部参考表述时，仍必须保留真实能力边界声明：live verification 尚未通过、Slack sink 不在默认范围、observer plugin 需要显式安装和手动启用、source 命令仍是 deterministic-only。
