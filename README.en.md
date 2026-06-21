@@ -1,19 +1,16 @@
-<table align="center">
-  <tr>
-    <td align="right" valign="middle" width="72%">
-      <img src="docs/assets/branding/hermeship-wordmark.svg" alt="HERMES-HIP" width="620">
-    </td>
-    <td align="left" valign="middle" width="28%">
-      <img src="docs/assets/branding/hermeship-icon.png" alt="Hermeship project icon" width="156">
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img src="docs/assets/branding/hermeship-lockup.png" alt="" width="760">
+</p>
 
-# Hermeship
+<h1 align="center">Hermeship</h1>
 
-<p align="right">
-  <a href="./README.md"><img alt="中文" src="https://img.shields.io/badge/%E8%AF%AD%E8%A8%80-%E4%B8%AD%E6%96%87-d97757?style=for-the-badge"></a>
-  <a href="./README.en.md"><img alt="English" src="https://img.shields.io/badge/Language-English-8c6f5a?style=for-the-badge"></a>
+<p align="center">
+  <strong>Hermes-native daemon-first event notification router</strong>
+</p>
+
+<p align="center">
+  <a href="./README.md"><kbd>中文</kbd></a>
+  <strong><kbd>English</kbd></strong>
 </p>
 
 Hermeship is an independent, Hermes-native, daemon-first event notification router. It owns its Hermes event contracts, Rust daemon, routing, rendering, delivery runtime, and release verification flow.

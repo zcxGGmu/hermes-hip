@@ -1,6 +1,6 @@
 # Hermeship 开发状态
 
-最后更新：2026-06-21 README HERMES-HIP 艺术字接入
+最后更新：2026-06-21 README 顶部品牌区视觉优化
 
 本文是下次启动 Codex 会话时的状态入口。执行开发前仍以 `tasks/development-checklist.md` 的 checkbox 为准；当前阶段计划维护在 `tasks/todo.md`。
 
@@ -24,11 +24,14 @@
 - 最新功能阶段提交：`6053cdf feat: 增加 typed observer body 并收紧安全边界`；上一功能阶段提交为 `803aefa feat: 增加 Hermes observer plugin 安装启用 CLI`。
 - 当前最新功能阶段：Milestone 10 后续 Typed Rust Observer Body 本地 deterministic parity 与安全 hardening 已完成并由 `6053cdf` 提交。
 - 当前最新文档阶段：Milestone 10.1 Hermes Observer 契约研究由 `93aa9ec` 完成。
-- 当前工作台：`tasks/todo.md` 已切换为“2026-06-21 README HERMES-HIP 艺术字接入”。
+- 当前工作台：`tasks/todo.md` 已切换为“2026-06-21 README 顶部品牌区视觉优化”。
+- 本轮 README 顶部品牌区改为统一仓库内 banner：`docs/assets/branding/hermeship-lockup.png`，由 `HERMES-HIP` wordmark 与项目图标合成，替代了表格拼接的双图布局。
+- 本轮 README 顶部语义层级改为：装饰性 banner、`h1` 项目名、简短副标题和对称语言切换；banner 在读屏中使用空 `alt`，避免与标题重复。
 - 本轮参考 `hermes-agent` 顶部 `assets/banner.png` 的黑底、黄橙高对比、像素块风格，为 README 新增仓库内 `HERMES-HIP` wordmark：`docs/assets/branding/hermeship-wordmark.svg`。
-- 本轮已将 `README.md` 与 `README.en.md` 顶部改为横向品牌头部：左侧 `HERMES-HIP` 艺术字，右侧现有 `docs/assets/branding/hermeship-icon.png` 项目图标；语言切换按钮保留在标题下方。
+- 本轮已将 `README.md` 与 `README.en.md` 顶部改为统一品牌 lockup：左侧 `HERMES-HIP` 艺术字与右侧项目图标合成为 `docs/assets/branding/hermeship-lockup.png`，再由单一居中图片展示；语言切换按钮保留在标题下方。
 - 本轮 README HERMES-HIP 艺术字接入只更新公开文档、静态品牌资产和状态记录，不改变功能代码、不新增真实 live pass、不实现 Slack sink、不自动启用 Hermes observer plugin。
 - 本轮 README HERMES-HIP 艺术字接入已验证：SVG XML 解析通过，使用 bundled Node `sharp` 渲染 SVG 预览并完成视觉抽查，README wordmark/icon/语言切换引用检查通过，公开 README 相关项目残留关键词检查无匹配，关键能力边界声明检查通过，`python3 -m py_compile templates/hermes-plugin/__init__.py`，`cargo fmt --all -- --check`，`cargo test observer_plugin`（13 passed），`cargo test release_preflight`（16 passed），`cargo run -- release preflight 0.1.0`（9 checks ok，`live verification` 只证明记录字段存在），`cargo clippy --all-targets -- -D warnings`，`cargo test`（221 lib tests + 15 bin tests + doctests passed），`git diff --check`。
+- 本轮 README 顶部品牌区优化已验证：`docs/assets/branding/hermeship-lockup.png` 为 1280 x 360 PNG，`docs/assets/branding/hermeship-wordmark.svg` 仍可正常解析，README 仅引用仓库内统一 lockup，不再依赖 table 拼接或 Shields 语言徽章；公开 README 相关项目残留关键词检查无匹配，关键能力边界声明检查通过，`python3 -m py_compile templates/hermes-plugin/__init__.py`，`cargo fmt --all -- --check`，`cargo test observer_plugin`（13 passed），`cargo test release_preflight`（16 passed），`cargo run -- release preflight 0.1.0`（9 checks ok，`live verification` 只证明记录字段存在），`cargo clippy --all-targets -- -D warnings`，`cargo test`（221 lib tests + 15 bin tests + doctests passed），`git diff --check`。
 - 本轮根据用户指定图片接入 README 项目图标：新增仓库内资产 `docs/assets/branding/hermeship-icon.png`，由原始 1254 x 1254 PNG 压缩为 512 x 512 PNG，并在 `README.md` 与 `README.en.md` 顶部标题下方展示。
 - 本轮 README 图标接入只更新公开文档、静态图片资产和状态记录，不改变功能代码、不新增真实 live pass、不实现 Slack sink、不自动启用 Hermes observer plugin。
 - 本轮 README 图标接入已验证：`rg -n -i "clawhip|template/clawhip|thin adapter|runtime adapter" README.md README.en.md` 无匹配，README 图标引用和关键边界声明检查通过，图标资产确认为 512 x 512 PNG，`python3 -m py_compile templates/hermes-plugin/__init__.py`，`cargo fmt --all -- --check`，`cargo test observer_plugin`（13 passed），`cargo test release_preflight`（16 passed），`cargo run -- release preflight 0.1.0`（9 checks ok，`live verification` 只证明记录字段存在），`cargo clippy --all-targets -- -D warnings`，`cargo test`（221 lib tests + 15 bin tests + doctests passed），`git diff --check`。

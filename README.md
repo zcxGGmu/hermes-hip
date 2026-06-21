@@ -1,19 +1,16 @@
-<table align="center">
-  <tr>
-    <td align="right" valign="middle" width="72%">
-      <img src="docs/assets/branding/hermeship-wordmark.svg" alt="HERMES-HIP" width="620">
-    </td>
-    <td align="left" valign="middle" width="28%">
-      <img src="docs/assets/branding/hermeship-icon.png" alt="Hermeship 项目图标" width="156">
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img src="docs/assets/branding/hermeship-lockup.png" alt="" width="760">
+</p>
 
-# Hermeship
+<h1 align="center">Hermeship</h1>
 
-<p align="right">
-  <a href="./README.md"><img alt="中文" src="https://img.shields.io/badge/%E8%AF%AD%E8%A8%80-%E4%B8%AD%E6%96%87-d97757?style=for-the-badge"></a>
-  <a href="./README.en.md"><img alt="English" src="https://img.shields.io/badge/Language-English-8c6f5a?style=for-the-badge"></a>
+<p align="center">
+  <strong>面向 Hermes 的 daemon-first 事件通知路由器</strong>
+</p>
+
+<p align="center">
+  <strong><kbd>中文</kbd></strong>
+  <a href="./README.en.md"><kbd>English</kbd></a>
 </p>
 
 Hermeship 是一个面向 Hermes 运行环境的独立、daemon-first 事件通知路由器。它拥有自己的 Hermes 事件契约、Rust daemon、路由、渲染、投递和发布验证流程。

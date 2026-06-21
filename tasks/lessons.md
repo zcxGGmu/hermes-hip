@@ -35,3 +35,10 @@
 - 后续编辑 `README.md` 和 `README.en.md` 时，不要写 `clawhip`、`template/clawhip`、adapter、thin adapter、runtime adapter 等关联表述。
 - 内部开发计划可以保留历史参考来源和架构演进记录，但公开 README 应只描述 Hermeship 自身目标、架构、能力边界、安装配置、验证和运维方式。
 - 移除外部参考表述时，仍必须保留真实能力边界声明：live verification 尚未通过、Slack sink 不在默认范围、observer plugin 需要显式安装和手动启用、source 命令仍是 deterministic-only。
+
+## 2026-06-21: README 顶部品牌区不要用表格拼图
+
+- 用户纠正：README 顶部图像和布局问题明显，表格拼接 wordmark 与图标会出现边框、竖线、比例失衡和风格割裂。
+- 后续编辑公开 README 顶部品牌区时，优先使用仓库内统一 brand lockup/banner 资产，不用 HTML table 把不同背景的图片硬拼在一起。
+- README 顶部应保持清晰层级：品牌图作为视觉资产，`h1` 作为语义标题，语言切换放在稳定一致的位置。
+- 装饰性品牌图应使用空 `alt`，避免与 `h1` 在读屏中重复；有意义的图表仍必须保留描述性 alt 文本。

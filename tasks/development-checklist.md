@@ -824,6 +824,16 @@
 
 最新记录放在最上方。
 
+### 2026-06-21 - README 顶部品牌区视觉优化
+
+- [x] 已按用户反馈移除 README 顶部 HTML table 拼图布局，避免 GitHub 渲染出现表格边框、竖向分割线和响应式脆弱问题。
+- [x] 已新增统一仓库内品牌横幅：`docs/assets/branding/hermeship-lockup.png`，由 `HERMES-HIP` wordmark 与项目图标合成，尺寸为 1280 x 360 PNG。
+- [x] 已更新 `README.md` 和 `README.en.md` 顶部：单一居中 banner、语义 `h1` 项目名、简短副标题、对称语言切换。
+- [x] 已将装饰性 banner 的 `alt` 置空，避免读屏重复朗读项目名；图表等有语义图片仍保留描述性 alt 文本。
+- [x] 已更新 `tasks/lessons.md`，记录“README 顶部品牌区不要用表格拼图”的规则。
+- [x] 本轮只修改 README、静态品牌资产和状态记录，不修改功能代码，不执行真实 Discord/Hermes live check，不实现 Slack sink，不自动启用 Hermes observer plugin。
+- [x] 已运行验证：`docs/assets/branding/hermeship-lockup.png` 确认为 1280 x 360 PNG，`docs/assets/branding/hermeship-wordmark.svg` XML 解析通过，README 顶部引用检查通过，公开 README 相关项目残留关键词检查无匹配，关键能力边界声明检查通过，`python3 -m py_compile templates/hermes-plugin/__init__.py`，`cargo fmt --all -- --check`，`cargo test observer_plugin`（13 passed），`cargo test release_preflight`（16 passed），`cargo run -- release preflight 0.1.0`（9 checks ok，`live verification` 只证明记录字段存在），`cargo clippy --all-targets -- -D warnings`，`cargo test`（221 lib tests + 15 bin tests + doctests passed），`git diff --check`。
+
 ### 2026-06-21 - README HERMES-HIP 艺术字接入
 
 - [x] 已参考 `hermes-agent` 顶部 `assets/banner.png` 的黑底、黄橙高对比、像素块风格，为 Hermeship 新增 `HERMES-HIP` wordmark：`docs/assets/branding/hermeship-wordmark.svg`。
