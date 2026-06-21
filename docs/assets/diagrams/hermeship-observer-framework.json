@@ -1,0 +1,308 @@
+{
+  "template_type": "architecture",
+  "style": 6,
+  "width": 1280,
+  "height": 760,
+  "title": "Hermes Observer Framework",
+  "subtitle": "Optional Hermes plugin scaffold forwards safe observer summaries into typed Rust routing without blocking Hermes",
+  "containers": [
+    {
+      "x": 56,
+      "y": 118,
+      "width": 1168,
+      "height": 122,
+      "label": "",
+      "side_label": "Operator",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    },
+    {
+      "x": 56,
+      "y": 284,
+      "width": 1168,
+      "height": 150,
+      "label": "",
+      "side_label": "Plugin",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    },
+    {
+      "x": 56,
+      "y": 494,
+      "width": 1168,
+      "height": 150,
+      "label": "",
+      "side_label": "Runtime",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "install",
+      "kind": "rect",
+      "x": 96,
+      "y": 150,
+      "width": 214,
+      "height": 60,
+      "label": "install-plugin",
+      "sublabel": "copies managed template",
+      "type_label": "CLI",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "enable",
+      "kind": "rect",
+      "x": 406,
+      "y": 150,
+      "width": 214,
+      "height": 60,
+      "label": "Hermes Enable",
+      "sublabel": "operator runs command",
+      "type_label": "MANUAL",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "boundary",
+      "kind": "rect",
+      "x": 772,
+      "y": 150,
+      "width": 214,
+      "height": 60,
+      "label": "Opt-In Boundary",
+      "sublabel": "never auto-enabled",
+      "type_label": "SAFETY",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3",
+      "flat": true
+    },
+    {
+      "id": "callbacks",
+      "kind": "double_rect",
+      "x": 98,
+      "y": 326,
+      "width": 214,
+      "height": 72,
+      "label": "Observer Hooks",
+      "sublabel": "session / api / llm / tool",
+      "type_label": "HERMES",
+      "fill": "#f7ecda",
+      "stroke": "#d97757"
+    },
+    {
+      "id": "collector",
+      "kind": "rect",
+      "x": 406,
+      "y": 330,
+      "width": 214,
+      "height": 66,
+      "label": "Safe Collector",
+      "sublabel": "allowlist + counts",
+      "type_label": "PRIVACY",
+      "fill": "#c8e4db",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "post",
+      "kind": "rect",
+      "x": 714,
+      "y": 330,
+      "width": 214,
+      "height": 66,
+      "label": "POST /event",
+      "sublabel": "timeout, fail-open",
+      "type_label": "HTTP",
+      "fill": "#c8e4db",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "disabled",
+      "kind": "rect",
+      "x": 1012,
+      "y": 330,
+      "width": 164,
+      "height": 66,
+      "label": "Disable Flag",
+      "sublabel": "env truthy skip",
+      "type_label": "ENV",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3",
+      "flat": true
+    },
+    {
+      "id": "body",
+      "kind": "double_rect",
+      "x": 110,
+      "y": 536,
+      "width": 220,
+      "height": 72,
+      "label": "HermesObserverEvent",
+      "sublabel": "typed Rust body",
+      "type_label": "EVENT",
+      "fill": "#c8e4db",
+      "stroke": "#8c6f5a"
+    },
+    {
+      "id": "aliases",
+      "kind": "rect",
+      "x": 426,
+      "y": 540,
+      "width": 210,
+      "height": 66,
+      "label": "Route Aliases",
+      "sublabel": "observer_provider etc.",
+      "type_label": "FILTER",
+      "fill": "#f7ecda",
+      "stroke": "#d0b893",
+      "flat": true
+    },
+    {
+      "id": "render",
+      "kind": "rect",
+      "x": 726,
+      "y": 540,
+      "width": 210,
+      "height": 66,
+      "label": "Safe Render",
+      "sublabel": "compact + raw summaries",
+      "type_label": "OUTPUT",
+      "fill": "#f7ecda",
+      "stroke": "#d0b893",
+      "flat": true
+    },
+    {
+      "id": "sink",
+      "kind": "rect",
+      "x": 1026,
+      "y": 540,
+      "width": 164,
+      "height": 66,
+      "label": "Delivery",
+      "sublabel": "Discord / fake",
+      "type_label": "SINK",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3",
+      "flat": true
+    }
+  ],
+  "arrows": [
+    {
+      "source": "install",
+      "target": "enable",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "control",
+      "label": "prints guide"
+    },
+    {
+      "source": "enable",
+      "target": "boundary",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "control",
+      "label": "manual"
+    },
+    {
+      "source": "enable",
+      "target": "callbacks",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "control",
+      "label": "register_hook",
+      "route_points": [[513, 260], [205, 260]]
+    },
+    {
+      "source": "callbacks",
+      "target": "collector",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "safe scalars"
+    },
+    {
+      "source": "collector",
+      "target": "post",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "async",
+      "label": "summary event"
+    },
+    {
+      "source": "disabled",
+      "target": "post",
+      "source_port": "left",
+      "target_port": "right",
+      "flow": "control",
+      "label": "skip",
+      "dashed": true
+    },
+    {
+      "source": "post",
+      "target": "body",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "data",
+      "label": "hermes.observer.*",
+      "route_points": [[821, 466], [220, 466]]
+    },
+    {
+      "source": "body",
+      "target": "aliases",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "read",
+      "label": "metadata"
+    },
+    {
+      "source": "aliases",
+      "target": "render",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "control",
+      "label": "match"
+    },
+    {
+      "source": "render",
+      "target": "sink",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "message"
+    }
+  ],
+  "legend": [
+    {
+      "flow": "control",
+      "label": "Operator or routing control"
+    },
+    {
+      "flow": "data",
+      "label": "Safe observer data"
+    },
+    {
+      "flow": "async",
+      "label": "Fail-open delivery"
+    },
+    {
+      "flow": "read",
+      "label": "Typed metadata read"
+    }
+  ],
+  "legend_position": "bottom-right",
+  "legend_box": true,
+  "legend_box_fill": "#fffaf3",
+  "legend_y": 636,
+  "footer": "The observer plugin forwards summaries only; raw prompts, commands, tool outputs, and session keys are not sent."
+}

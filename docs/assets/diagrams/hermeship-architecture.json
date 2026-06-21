@@ -1,0 +1,351 @@
+{
+  "template_type": "architecture",
+  "style": 6,
+  "width": 1280,
+  "height": 760,
+  "title": "Hermeship Architecture",
+  "subtitle": "Hermes-native daemon-first event router with typed envelopes, safe rendering, and Discord delivery",
+  "containers": [
+    {
+      "x": 56,
+      "y": 118,
+      "width": 1168,
+      "height": 122,
+      "label": "",
+      "side_label": "Ingress",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    },
+    {
+      "x": 56,
+      "y": 286,
+      "width": 1168,
+      "height": 148,
+      "label": "",
+      "side_label": "Daemon Core",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    },
+    {
+      "x": 56,
+      "y": 500,
+      "width": 1168,
+      "height": 150,
+      "label": "",
+      "side_label": "Delivery",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "hooks",
+      "kind": "rect",
+      "x": 88,
+      "y": 148,
+      "width": 184,
+      "height": 62,
+      "label": "Gateway Hooks",
+      "sublabel": "HOOK.yaml + handler.py",
+      "type_label": "HERMES",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "observer",
+      "kind": "rect",
+      "x": 342,
+      "y": 148,
+      "width": 184,
+      "height": 62,
+      "label": "Observer Plugin",
+      "sublabel": "optional template",
+      "type_label": "OPT-IN",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "cli",
+      "kind": "rect",
+      "x": 596,
+      "y": 148,
+      "width": 184,
+      "height": 62,
+      "label": "CLI + Sources",
+      "sublabel": "send / emit / local",
+      "type_label": "CLIENT",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "config",
+      "kind": "document",
+      "x": 936,
+      "y": 136,
+      "width": 178,
+      "height": 74,
+      "label": "Config Routes",
+      "sublabel": "TOML route rules",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3"
+    },
+    {
+      "id": "ingress",
+      "kind": "double_rect",
+      "x": 92,
+      "y": 328,
+      "width": 184,
+      "height": 66,
+      "label": "HTTP Ingress",
+      "sublabel": "/event + /api/hermes/hook",
+      "type_label": "AXUM",
+      "fill": "#f7ecda",
+      "stroke": "#d97757"
+    },
+    {
+      "id": "privacy",
+      "kind": "rect",
+      "x": 336,
+      "y": 328,
+      "width": 184,
+      "height": 66,
+      "label": "Privacy Guard",
+      "sublabel": "redact + summarize",
+      "type_label": "SAFETY",
+      "fill": "#c8e4db",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "envelope",
+      "kind": "rect",
+      "x": 580,
+      "y": 328,
+      "width": 190,
+      "height": 66,
+      "label": "Typed Envelope",
+      "sublabel": "EventBody + metadata",
+      "type_label": "MODEL",
+      "fill": "#c8e4db",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "queue",
+      "kind": "cylinder",
+      "x": 844,
+      "y": 318,
+      "width": 150,
+      "height": 86,
+      "label": "MPSC Queue",
+      "sublabel": "bounded local buffer",
+      "fill": "#e5e8df",
+      "stroke": "#7b8b5c"
+    },
+    {
+      "id": "dispatcher",
+      "kind": "double_rect",
+      "x": 1044,
+      "y": 328,
+      "width": 152,
+      "height": 66,
+      "label": "Dispatcher",
+      "sublabel": "best-effort fanout",
+      "type_label": "CORE",
+      "fill": "#f7ecda",
+      "stroke": "#d97757"
+    },
+    {
+      "id": "router",
+      "kind": "rect",
+      "x": 182,
+      "y": 542,
+      "width": 178,
+      "height": 66,
+      "label": "Router",
+      "sublabel": "0..N deliveries",
+      "type_label": "MATCH",
+      "fill": "#f7ecda",
+      "stroke": "#d0b893",
+      "flat": true
+    },
+    {
+      "id": "renderer",
+      "kind": "rect",
+      "x": 436,
+      "y": 542,
+      "width": 178,
+      "height": 66,
+      "label": "Renderer",
+      "sublabel": "compact / raw / alert",
+      "type_label": "FORMAT",
+      "fill": "#f7ecda",
+      "stroke": "#d0b893",
+      "flat": true
+    },
+    {
+      "id": "registry",
+      "kind": "rect",
+      "x": 690,
+      "y": 542,
+      "width": 178,
+      "height": 66,
+      "label": "Sink Registry",
+      "sublabel": "discord + fake sink",
+      "type_label": "TRANSPORT",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3",
+      "flat": true
+    },
+    {
+      "id": "discord",
+      "kind": "rect",
+      "x": 944,
+      "y": 542,
+      "width": 178,
+      "height": 66,
+      "label": "Discord Sink",
+      "sublabel": "bot token / webhook",
+      "type_label": "DELIVERY",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3",
+      "flat": true
+    }
+  ],
+  "arrows": [
+    {
+      "source": "hooks",
+      "target": "ingress",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "control",
+      "label": "hook envelope",
+      "route_points": [[180, 262], [184, 262]]
+    },
+    {
+      "source": "observer",
+      "target": "ingress",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "async",
+      "label": "observer event",
+      "route_points": [[434, 262], [184, 262]]
+    },
+    {
+      "source": "cli",
+      "target": "ingress",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "data",
+      "label": "IncomingEvent",
+      "route_points": [[688, 262], [184, 262]]
+    },
+    {
+      "source": "ingress",
+      "target": "privacy",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "sanitize"
+    },
+    {
+      "source": "privacy",
+      "target": "envelope",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "normalize"
+    },
+    {
+      "source": "envelope",
+      "target": "queue",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "write",
+      "label": "enqueue",
+      "dashed": true
+    },
+    {
+      "source": "queue",
+      "target": "dispatcher",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "read",
+      "label": "consume"
+    },
+    {
+      "source": "dispatcher",
+      "target": "router",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "control",
+      "label": "resolve",
+      "route_points": [[1120, 472], [271, 472]]
+    },
+    {
+      "source": "config",
+      "target": "router",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "read",
+      "label": "route rules",
+      "route_points": [[1025, 468], [271, 468]]
+    },
+    {
+      "source": "router",
+      "target": "renderer",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "control",
+      "label": "delivery"
+    },
+    {
+      "source": "renderer",
+      "target": "registry",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "message"
+    },
+    {
+      "source": "registry",
+      "target": "discord",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "control",
+      "label": "send"
+    }
+  ],
+  "legend": [
+    {
+      "flow": "data",
+      "label": "Event data"
+    },
+    {
+      "flow": "control",
+      "label": "Dispatch control"
+    },
+    {
+      "flow": "write",
+      "label": "Queue write"
+    },
+    {
+      "flow": "async",
+      "label": "Fail-open observer"
+    }
+  ],
+  "legend_position": "bottom-right",
+  "legend_box": true,
+  "legend_box_fill": "#fffaf3",
+  "legend_y": 642,
+  "footer": "Hermeship owns its runtime; clawhip is an architecture reference, not a dependency."
+}

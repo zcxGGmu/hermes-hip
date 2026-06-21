@@ -1,6 +1,6 @@
 # Hermeship 开发状态
 
-最后更新：2026-06-20 本地验证续接已完成；下一步为真实 live 条件补测或真实 observer 使用反馈修正
+最后更新：2026-06-21 README 双语入口与 Claude Official 图表阶段
 
 本文是下次启动 Codex 会话时的状态入口。执行开发前仍以 `tasks/development-checklist.md` 的 checkbox 为准；当前阶段计划维护在 `tasks/todo.md`。
 
@@ -24,7 +24,10 @@
 - 最新功能阶段提交：`6053cdf feat: 增加 typed observer body 并收紧安全边界`；上一功能阶段提交为 `803aefa feat: 增加 Hermes observer plugin 安装启用 CLI`。
 - 当前最新功能阶段：Milestone 10 后续 Typed Rust Observer Body 本地 deterministic parity 与安全 hardening 已完成并由 `6053cdf` 提交。
 - 当前最新文档阶段：Milestone 10.1 Hermes Observer 契约研究由 `93aa9ec` 完成。
-- 当前工作台：`tasks/todo.md` 已切换为“2026-06-20 本地验证续接与状态记录”。
+- 当前工作台：`tasks/todo.md` 已切换为“2026-06-21 README 双语入口与 Claude Official 架构图”。
+- 本轮文档阶段已重写根 `README.md` 为中英文双语 operational spec，并新增 `docs/assets/diagrams/` 下 3 组 Style 6（Claude Official）图表资产：`hermeship-architecture`、`hermeship-event-flow`、`hermeship-observer-framework`，每组包含 `.json` 数据源、`.svg` 和 `.png`。
+- 本轮 README 和图表只更新项目说明与可视化，不改变功能代码、不新增真实 live pass、不实现 Slack sink、不自动启用 Hermes observer plugin。
+- 本轮已验证图表资产：3 个 JSON 解析通过、3 个 SVG XML 解析通过、3 个 PNG 均为 1280x760，并完成视觉抽查。
 - 本轮已重新运行默认本地验证：`python3 -m py_compile templates/hermes-plugin/__init__.py`、`cargo test observer_plugin`（13 passed）、`cargo test release_preflight`（16 passed）、`cargo run -- release preflight 0.1.0`（9 checks ok）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（221 lib tests + 15 bin tests + doctests passed）。
 - `cargo run -- release preflight 0.1.0` 的 `live verification` check 只证明 `docs/live-verification.md` 记录字段存在，不断言真实 Discord/Hermes live pass。
 - 最近 Milestone 10.3、typed observer body 阶段和本轮本地验证续接均未提供 Discord credentials、测试频道、Hermes gateway 测试环境或明确执行确认，因此未执行真实 Discord/Hermes live check。

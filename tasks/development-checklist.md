@@ -824,6 +824,19 @@
 
 最新记录放在最上方。
 
+### 2026-06-21 - README 双语入口与 Claude Official 图表
+
+- [x] 已复习 `tasks/lessons.md`，确认阶段完成后必须验证并提交，且 Hermeship 不是 `clawhip` thin adapter。
+- [x] 已确认当前分支为 `codex/milestone-1-cli`；启动时工作树干净，最近提交为 `04fb880 docs: 记录 2026-06-20 Hermeship 本地验证续接`、`b76a007 docs: 记录 Hermeship 本地验证续接`、`95a53d5 docs: 更新 Hermeship 最新开发状态与启动提示词`、`608704e docs: 记录 Hermeship 本地验证续接状态`、`c226514 docs: 更新 Hermeship 最新开发状态与下次启动提示词`。
+- [x] 已将本轮计划写入 `tasks/todo.md`，范围限定为 README 双语文档、Style 6 图表资产、状态日志更新、验证和阶段提交。
+- [x] 已只读参考 `/Users/zq/Desktop/ai-projs/posp/template/clawhip` 的 README、ARCHITECTURE 和事件契约文档；只复用 daemon-first operational spec 结构，不复用 OpenClaw/Codex/Claude、Slack 或真实 source 能力声明。
+- [x] 已重写根 `README.md` 为中英文双语入口，覆盖项目定位、当前能力边界、安装配置、daemon、Hermes hooks、observer plugin、source commands、路由/渲染/隐私、live verification 和 release preflight。
+- [x] 已新增 `docs/assets/diagrams/` 图表资产：`hermeship-architecture`、`hermeship-event-flow`、`hermeship-observer-framework`，每组包含 `.json` 数据源、`.svg` 和 `.png`。
+- [x] 已验证图表资产：3 个 JSON 解析通过、3 个 SVG XML 解析通过、3 个 PNG 均为 1280x760，并完成视觉抽查；`cairosvg` 因本机缺少 cairo 动态库不可用，实际使用 macOS `sips` 导出 PNG。
+- [x] 本轮未提供 Discord credentials、测试频道、Hermes gateway 测试环境或明确执行确认，因此未执行真实 Discord/Hermes live check，也未新增 `docs/live-verification.md` 真实 pass 结果。
+- [x] 本轮默认不实现 Slack sink，不自动启用 Hermes observer plugin，不修改功能代码。
+- [x] 已运行验证：`python3 -m py_compile templates/hermes-plugin/__init__.py`、`cargo test observer_plugin`（13 passed）、`cargo test release_preflight`（16 passed）、`cargo run -- release preflight 0.1.0`（9 checks ok，`live verification` 输出为记录字段存在且不声明真实 pass）、`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test`（221 lib tests + 15 bin tests + doctests passed）。
+
 ### 2026-06-20 - 本地验证续接与状态记录
 
 - [x] 已复习 `tasks/lessons.md`，确认阶段完成后必须验证并提交，且不能把未验证、未完成或无关工作混入阶段提交。

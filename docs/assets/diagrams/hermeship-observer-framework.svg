@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7b8b5c"/>
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8c6f5a"/>
+    </marker>
+    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#b45309"/>
+    </marker>
+    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9a6fb0"/>
+    </marker>
+    <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8f8a80"/>
+    </marker>
+    <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #141413; }
+    .subtitle { font-size: 13px; font-weight: 500; fill: #8f8a80; }
+    .section { font-size: 13px; font-weight: 700; fill: #8b7355; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #b4aba0; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #141413; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #a29a8f; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #6b6257; }
+    .legend { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #a29a8f; }
+    </style>
+  </defs>
+  <rect width="1280.0" height="760.0" fill="#f8f6f3"/>
+  <text x="48.0" y="48" text-anchor="start" class="title">Hermes Observer Framework</text>
+  <text x="48.0" y="72" text-anchor="start" class="subtitle">Optional Hermes plugin scaffold forwards safe observer summaries into typed Rust routing without blocking Hermes</text>
+  <line x1="48" y1="100" x2="1232.0" y2="100" stroke="#ded8cf" stroke-width="1"/>
+  <rect x="56.0" y="118.0" width="1168.0" height="122.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="28.0" y="179.0" text-anchor="start" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Operator</text>
+  <rect x="56.0" y="284.0" width="1168.0" height="150.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="28.0" y="359.0" text-anchor="start" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Plugin</text>
+  <rect x="56.0" y="494.0" width="1168.0" height="150.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="28.0" y="569.0" text-anchor="start" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Runtime</text>
+  <path d="M 310.0,180.0 L 406.0,180.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <path d="M 620.0,180.0 L 772.0,180.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <path d="M 513.0,210.0 L 513.0,260.0 L 205.0,260.0 L 205.0,326.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <path d="M 312.0,362.0 L 332.4,362.0 L 385.6,363.0 L 406.0,363.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 620.0,363.0 L 714.0,363.0" fill="none" stroke="#9a6fb0" stroke-width="2.0" marker-end="url(#arrowF)"/>
+  <path d="M 1012.0,363.0 L 928.0,363.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <path d="M 821.0,396.0 L 821.0,466.0 L 220.0,466.0 L 220.0,536.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 330.0,572.0 L 350.4,572.0 L 405.6,573.0 L 426.0,573.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <path d="M 636.0,573.0 L 726.0,573.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <path d="M 936.0,573.0 L 1026.0,573.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <rect x="96.0" y="150.0" width="214.0" height="60.0" rx="10.0" fill="#e9f1fb" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="203.0" y="168.0" text-anchor="middle" class="node-type">CLI</text>
+  <text x="203.0" y="186.0" text-anchor="middle" class="node-title">install-plugin</text>
+  <text x="203.0" y="208.0" text-anchor="middle" class="node-sub">copies managed template</text>
+  <rect x="406.0" y="150.0" width="214.0" height="60.0" rx="10.0" fill="#e9f1fb" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="513.0" y="168.0" text-anchor="middle" class="node-type">MANUAL</text>
+  <text x="513.0" y="186.0" text-anchor="middle" class="node-title">Hermes Enable</text>
+  <text x="513.0" y="208.0" text-anchor="middle" class="node-sub">operator runs command</text>
+  <rect x="772.0" y="150.0" width="214.0" height="60.0" rx="10.0" fill="#efe8de" stroke="#d0c3b3" stroke-width="1.8"/>
+  <text x="879.0" y="168.0" text-anchor="middle" class="node-type">SAFETY</text>
+  <text x="879.0" y="186.0" text-anchor="middle" class="node-title">Opt-In Boundary</text>
+  <text x="879.0" y="208.0" text-anchor="middle" class="node-sub">never auto-enabled</text>
+  <rect x="98.0" y="326.0" width="214.0" height="72.0" rx="10.0" fill="#f7ecda" stroke="#d97757" stroke-width="2.0"/>
+  <rect x="104.0" y="332.0" width="202.0" height="60.0" rx="7.0" fill="none" stroke="#d97757" stroke-width="1.2" opacity="0.65"/>
+  <text x="205.0" y="344.0" text-anchor="middle" class="node-type">HERMES</text>
+  <text x="205.0" y="368.0" text-anchor="middle" class="node-title">Observer Hooks</text>
+  <text x="205.0" y="390.0" text-anchor="middle" class="node-sub">session / api / llm / tool</text>
+  <rect x="406.0" y="330.0" width="214.0" height="66.0" rx="10.0" fill="#c8e4db" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="513.0" y="348.0" text-anchor="middle" class="node-type">PRIVACY</text>
+  <text x="513.0" y="369.0" text-anchor="middle" class="node-title">Safe Collector</text>
+  <text x="513.0" y="391.0" text-anchor="middle" class="node-sub">allowlist + counts</text>
+  <rect x="714.0" y="330.0" width="214.0" height="66.0" rx="10.0" fill="#c8e4db" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="821.0" y="348.0" text-anchor="middle" class="node-type">HTTP</text>
+  <text x="821.0" y="369.0" text-anchor="middle" class="node-title">POST /event</text>
+  <text x="821.0" y="391.0" text-anchor="middle" class="node-sub">timeout, fail-open</text>
+  <rect x="1012.0" y="330.0" width="164.0" height="66.0" rx="10.0" fill="#efe8de" stroke="#d0c3b3" stroke-width="1.8"/>
+  <text x="1094.0" y="348.0" text-anchor="middle" class="node-type">ENV</text>
+  <text x="1094.0" y="369.0" text-anchor="middle" class="node-title">Disable Flag</text>
+  <text x="1094.0" y="391.0" text-anchor="middle" class="node-sub">env truthy skip</text>
+  <rect x="110.0" y="536.0" width="220.0" height="72.0" rx="10.0" fill="#c8e4db" stroke="#8c6f5a" stroke-width="2.0"/>
+  <rect x="116.0" y="542.0" width="208.0" height="60.0" rx="7.0" fill="none" stroke="#8c6f5a" stroke-width="1.2" opacity="0.65"/>
+  <text x="220.0" y="554.0" text-anchor="middle" class="node-type">EVENT</text>
+  <text x="220.0" y="578.0" text-anchor="middle" class="node-title">HermesObserverEvent</text>
+  <text x="220.0" y="600.0" text-anchor="middle" class="node-sub">typed Rust body</text>
+  <rect x="426.0" y="540.0" width="210.0" height="66.0" rx="10.0" fill="#f7ecda" stroke="#d0b893" stroke-width="1.8"/>
+  <text x="531.0" y="558.0" text-anchor="middle" class="node-type">FILTER</text>
+  <text x="531.0" y="579.0" text-anchor="middle" class="node-title">Route Aliases</text>
+  <text x="531.0" y="601.0" text-anchor="middle" class="node-sub">observer_provider etc.</text>
+  <rect x="726.0" y="540.0" width="210.0" height="66.0" rx="10.0" fill="#f7ecda" stroke="#d0b893" stroke-width="1.8"/>
+  <text x="831.0" y="558.0" text-anchor="middle" class="node-type">OUTPUT</text>
+  <text x="831.0" y="579.0" text-anchor="middle" class="node-title">Safe Render</text>
+  <text x="831.0" y="601.0" text-anchor="middle" class="node-sub">compact + raw summaries</text>
+  <rect x="1026.0" y="540.0" width="164.0" height="66.0" rx="10.0" fill="#efe8de" stroke="#d0c3b3" stroke-width="1.8"/>
+  <text x="1108.0" y="558.0" text-anchor="middle" class="node-type">SINK</text>
+  <text x="1108.0" y="579.0" text-anchor="middle" class="node-title">Delivery</text>
+  <text x="1108.0" y="601.0" text-anchor="middle" class="node-sub">Discord / fake</text>
+  <rect x="309.0" y="166.0" width="98" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="358.0" y="180.0" text-anchor="middle" class="arrow-label">prints guide</text>
+  <rect x="668.0" y="150.0" width="56" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="696.0" y="164.0" text-anchor="middle" class="arrow-label">manual</text>
+  <rect x="306.5" y="230.0" width="105" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="359.0" y="244.0" text-anchor="middle" class="arrow-label">register_hook</text>
+  <rect x="310.0" y="348.5" width="98" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="359.0" y="362.5" text-anchor="middle" class="arrow-label">safe scalars</text>
+  <rect x="614.5" y="349.0" width="105" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="667.0" y="363.0" text-anchor="middle" class="arrow-label">summary event</text>
+  <rect x="949.0" y="333.0" width="42" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="970.0" y="347.0" text-anchor="middle" class="arrow-label">skip</text>
+  <rect x="454.0" y="436.0" width="133" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="520.5" y="450.0" text-anchor="middle" class="arrow-label">hermes.observer.*</text>
+  <rect x="343.0" y="542.5" width="70" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="378.0" y="556.5" text-anchor="middle" class="arrow-label">metadata</text>
+  <rect x="656.5" y="543.0" width="49" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="681.0" y="557.0" text-anchor="middle" class="arrow-label">match</text>
+  <rect x="949.5" y="543.0" width="63" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="981.0" y="557.0" text-anchor="middle" class="arrow-label">message</text>
+  <rect x="987.0" y="622.0" width="261" height="112" rx="10" fill="#fffaf3" opacity="0.88"/>
+  <line x1="997.0" y1="636.0" x2="1027.0" y2="636.0" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <text x="1037.0" y="640.0" class="legend">Operator or routing control</text>
+  <line x1="997.0" y1="658.0" x2="1027.0" y2="658.0" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <text x="1037.0" y="662.0" class="legend">Safe observer data</text>
+  <line x1="997.0" y1="680.0" x2="1027.0" y2="680.0" stroke="#9a6fb0" stroke-width="2.0" marker-end="url(#arrowF)"/>
+  <text x="1037.0" y="684.0" class="legend">Fail-open delivery</text>
+  <line x1="997.0" y1="702.0" x2="1027.0" y2="702.0" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <text x="1037.0" y="706.0" class="legend">Typed metadata read</text>
+  <text x="42.0" y="744.0" class="footnote">The observer plugin forwards summaries only; raw prompts, commands, tool outputs, and session keys are not sent.</text>
+</svg>

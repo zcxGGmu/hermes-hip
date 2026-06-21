@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7b8b5c"/>
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8c6f5a"/>
+    </marker>
+    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#b45309"/>
+    </marker>
+    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9a6fb0"/>
+    </marker>
+    <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8f8a80"/>
+    </marker>
+    <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #141413; }
+    .subtitle { font-size: 13px; font-weight: 500; fill: #8f8a80; }
+    .section { font-size: 13px; font-weight: 700; fill: #8b7355; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #b4aba0; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #141413; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #a29a8f; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #6b6257; }
+    .legend { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #a29a8f; }
+    </style>
+  </defs>
+  <rect width="1280.0" height="760.0" fill="#f8f6f3"/>
+  <text x="48.0" y="48" text-anchor="start" class="title">Hermeship Architecture</text>
+  <text x="48.0" y="72" text-anchor="start" class="subtitle">Hermes-native daemon-first event router with typed envelopes, safe rendering, and Discord delivery</text>
+  <line x1="48" y1="100" x2="1232.0" y2="100" stroke="#ded8cf" stroke-width="1"/>
+  <rect x="56.0" y="118.0" width="1168.0" height="122.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="28.0" y="179.0" text-anchor="start" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Ingress</text>
+  <rect x="56.0" y="286.0" width="1168.0" height="148.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="28.0" y="360.0" text-anchor="start" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Daemon Core</text>
+  <rect x="56.0" y="500.0" width="1168.0" height="150.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="28.0" y="575.0" text-anchor="start" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Delivery</text>
+  <path d="M 180.0,210.0 L 180.0,262.0 L 184.0,262.0 L 184.0,328.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <path d="M 434.0,210.0 L 434.0,262.0 L 184.0,262.0 L 184.0,328.0" fill="none" stroke="#9a6fb0" stroke-width="2.0" marker-end="url(#arrowF)"/>
+  <path d="M 688.0,210.0 L 688.0,262.0 L 184.0,262.0 L 184.0,328.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 276.0,361.0 L 336.0,361.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 520.0,361.0 L 580.0,361.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 770.0,361.0 L 844.0,361.0" fill="none" stroke="#7b8b5c" stroke-width="2.0" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+  <path d="M 994.0,361.0 L 1044.0,361.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <path d="M 1120.0,394.0 L 1120.0,472.0 L 271.0,472.0 L 271.0,542.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <path d="M 1025.0,210.0 L 1025.0,468.0 L 271.0,468.0 L 271.0,542.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <path d="M 360.0,575.0 L 436.0,575.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <path d="M 614.0,575.0 L 690.0,575.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 868.0,575.0 L 944.0,575.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <rect x="88.0" y="148.0" width="184.0" height="62.0" rx="10.0" fill="#e9f1fb" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="180.0" y="166.0" text-anchor="middle" class="node-type">HERMES</text>
+  <text x="180.0" y="185.0" text-anchor="middle" class="node-title">Gateway Hooks</text>
+  <text x="180.0" y="207.0" text-anchor="middle" class="node-sub">HOOK.yaml + handler.py</text>
+  <rect x="342.0" y="148.0" width="184.0" height="62.0" rx="10.0" fill="#e9f1fb" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="434.0" y="166.0" text-anchor="middle" class="node-type">OPT-IN</text>
+  <text x="434.0" y="185.0" text-anchor="middle" class="node-title">Observer Plugin</text>
+  <text x="434.0" y="207.0" text-anchor="middle" class="node-sub">optional template</text>
+  <rect x="596.0" y="148.0" width="184.0" height="62.0" rx="10.0" fill="#e9f1fb" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="688.0" y="166.0" text-anchor="middle" class="node-type">CLIENT</text>
+  <text x="688.0" y="185.0" text-anchor="middle" class="node-title">CLI + Sources</text>
+  <text x="688.0" y="207.0" text-anchor="middle" class="node-sub">send / emit / local</text>
+  <path d="M 936.0 136.0 L 1097.72 136.0 L 1114.0 152.28 L 1114.0 210.0 L 936.0 210.0 Z" fill="#efe8de" stroke="#d0c3b3" stroke-width="2.0"/>
+  <path d="M 1097.72 136.0 L 1097.72 152.28 L 1114.0 152.28" fill="none" stroke="#d0c3b3" stroke-width="2.0"/>
+  <line x1="954.0" y1="162.0" x2="1086.0" y2="162.0" stroke="#c4b5fd" stroke-width="1.2"/>
+  <line x1="954.0" y1="176.0" x2="1086.0" y2="176.0" stroke="#c4b5fd" stroke-width="1.2"/>
+  <line x1="954.0" y1="190.0" x2="1086.0" y2="190.0" stroke="#c4b5fd" stroke-width="1.2"/>
+  <line x1="954.0" y1="204.0" x2="1086.0" y2="204.0" stroke="#c4b5fd" stroke-width="1.2"/>
+  <text x="1025.0" y="236.0" text-anchor="middle" class="node-title">Config Routes</text>
+  <text x="1025.0" y="254.0" text-anchor="middle" class="node-sub">TOML route rules</text>
+  <rect x="92.0" y="328.0" width="184.0" height="66.0" rx="10.0" fill="#f7ecda" stroke="#d97757" stroke-width="2.0"/>
+  <rect x="98.0" y="334.0" width="172.0" height="54.0" rx="7.0" fill="none" stroke="#d97757" stroke-width="1.2" opacity="0.65"/>
+  <text x="184.0" y="346.0" text-anchor="middle" class="node-type">AXUM</text>
+  <text x="184.0" y="367.0" text-anchor="middle" class="node-title">HTTP Ingress</text>
+  <text x="184.0" y="389.0" text-anchor="middle" class="node-sub">/event + /api/hermes/hook</text>
+  <rect x="336.0" y="328.0" width="184.0" height="66.0" rx="10.0" fill="#c8e4db" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="428.0" y="346.0" text-anchor="middle" class="node-type">SAFETY</text>
+  <text x="428.0" y="367.0" text-anchor="middle" class="node-title">Privacy Guard</text>
+  <text x="428.0" y="389.0" text-anchor="middle" class="node-sub">redact + summarize</text>
+  <rect x="580.0" y="328.0" width="190.0" height="66.0" rx="10.0" fill="#c8e4db" stroke="#8c6f5a" stroke-width="1.8"/>
+  <text x="675.0" y="346.0" text-anchor="middle" class="node-type">MODEL</text>
+  <text x="675.0" y="367.0" text-anchor="middle" class="node-title">Typed Envelope</text>
+  <text x="675.0" y="389.0" text-anchor="middle" class="node-sub">EventBody + metadata</text>
+  <ellipse cx="919.0" cy="328.75" rx="37.5" ry="10.75" fill="#e5e8df" stroke="#7b8b5c" stroke-width="2.2"/>
+  <rect x="844.0" y="328.75" width="150.0" height="64.5" fill="#e5e8df" stroke="#7b8b5c" stroke-width="2.2"/>
+  <ellipse cx="919.0" cy="393.25" rx="37.5" ry="10.75" fill="#e5e8df" stroke="#7b8b5c" stroke-width="2.2"/>
+  <ellipse cx="919.0" cy="350.68" rx="37.5" ry="10.75" fill="none" stroke="#7b8b5c" stroke-opacity="0.45" stroke-width="1.2"/>
+  <ellipse cx="919.0" cy="369.6" rx="37.5" ry="10.75" fill="none" stroke="#7b8b5c" stroke-opacity="0.25" stroke-width="1.2"/>
+  <text x="919.0" y="355.0" text-anchor="middle" class="node-title">MPSC Queue</text>
+  <text x="919.0" y="379.0" text-anchor="middle" class="node-sub">bounded local buffer</text>
+  <rect x="1044.0" y="328.0" width="152.0" height="66.0" rx="10.0" fill="#f7ecda" stroke="#d97757" stroke-width="2.0"/>
+  <rect x="1050.0" y="334.0" width="140.0" height="54.0" rx="7.0" fill="none" stroke="#d97757" stroke-width="1.2" opacity="0.65"/>
+  <text x="1120.0" y="346.0" text-anchor="middle" class="node-type">CORE</text>
+  <text x="1120.0" y="367.0" text-anchor="middle" class="node-title">Dispatcher</text>
+  <text x="1120.0" y="389.0" text-anchor="middle" class="node-sub">best-effort fanout</text>
+  <rect x="182.0" y="542.0" width="178.0" height="66.0" rx="10.0" fill="#f7ecda" stroke="#d0b893" stroke-width="1.8"/>
+  <text x="271.0" y="560.0" text-anchor="middle" class="node-type">MATCH</text>
+  <text x="271.0" y="581.0" text-anchor="middle" class="node-title">Router</text>
+  <text x="271.0" y="603.0" text-anchor="middle" class="node-sub">0..N deliveries</text>
+  <rect x="436.0" y="542.0" width="178.0" height="66.0" rx="10.0" fill="#f7ecda" stroke="#d0b893" stroke-width="1.8"/>
+  <text x="525.0" y="560.0" text-anchor="middle" class="node-type">FORMAT</text>
+  <text x="525.0" y="581.0" text-anchor="middle" class="node-title">Renderer</text>
+  <text x="525.0" y="603.0" text-anchor="middle" class="node-sub">compact / raw / alert</text>
+  <rect x="690.0" y="542.0" width="178.0" height="66.0" rx="10.0" fill="#efe8de" stroke="#d0c3b3" stroke-width="1.8"/>
+  <text x="779.0" y="560.0" text-anchor="middle" class="node-type">TRANSPORT</text>
+  <text x="779.0" y="581.0" text-anchor="middle" class="node-title">Sink Registry</text>
+  <text x="779.0" y="603.0" text-anchor="middle" class="node-sub">discord + fake sink</text>
+  <rect x="944.0" y="542.0" width="178.0" height="66.0" rx="10.0" fill="#efe8de" stroke="#d0c3b3" stroke-width="1.8"/>
+  <text x="1033.0" y="560.0" text-anchor="middle" class="node-type">DELIVERY</text>
+  <text x="1033.0" y="581.0" text-anchor="middle" class="node-title">Discord Sink</text>
+  <text x="1033.0" y="603.0" text-anchor="middle" class="node-sub">bot token / webhook</text>
+  <rect x="113.5" y="281.0" width="105" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="166.0" y="295.0" text-anchor="middle" class="arrow-label">hook envelope</text>
+  <rect x="253.0" y="232.0" width="112" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="309.0" y="246.0" text-anchor="middle" class="arrow-label">observer event</text>
+  <rect x="383.5" y="232.0" width="105" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="436.0" y="246.0" text-anchor="middle" class="arrow-label">IncomingEvent</text>
+  <rect x="271.0" y="347.0" width="70" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="306.0" y="361.0" text-anchor="middle" class="arrow-label">sanitize</text>
+  <rect x="511.5" y="347.0" width="77" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="550.0" y="361.0" text-anchor="middle" class="arrow-label">normalize</text>
+  <rect x="775.5" y="331.0" width="63" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="807.0" y="345.0" text-anchor="middle" class="arrow-label">enqueue</text>
+  <rect x="987.5" y="347.0" width="63" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="1019.0" y="361.0" text-anchor="middle" class="arrow-label">consume</text>
+  <rect x="664.0" y="442.0" width="63" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="695.5" y="456.0" text-anchor="middle" class="arrow-label">resolve</text>
+  <rect x="602.5" y="470.0" width="91" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="648.0" y="484.0" text-anchor="middle" class="arrow-label">route rules</text>
+  <rect x="363.0" y="561.0" width="70" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="398.0" y="575.0" text-anchor="middle" class="arrow-label">delivery</text>
+  <rect x="620.5" y="545.0" width="63" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="652.0" y="559.0" text-anchor="middle" class="arrow-label">message</text>
+  <rect x="885.0" y="545.0" width="42" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="906.0" y="559.0" text-anchor="middle" class="arrow-label">send</text>
+  <rect x="1050.0" y="628.0" width="198" height="112" rx="10" fill="#fffaf3" opacity="0.88"/>
+  <line x1="1060.0" y1="642.0" x2="1090.0" y2="642.0" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <text x="1100.0" y="646.0" class="legend">Event data</text>
+  <line x1="1060.0" y1="664.0" x2="1090.0" y2="664.0" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <text x="1100.0" y="668.0" class="legend">Dispatch control</text>
+  <line x1="1060.0" y1="686.0" x2="1090.0" y2="686.0" stroke="#7b8b5c" stroke-width="2.0" marker-end="url(#arrowB)"/>
+  <text x="1100.0" y="690.0" class="legend">Queue write</text>
+  <line x1="1060.0" y1="708.0" x2="1090.0" y2="708.0" stroke="#9a6fb0" stroke-width="2.0" marker-end="url(#arrowF)"/>
+  <text x="1100.0" y="712.0" class="legend">Fail-open observer</text>
+  <text x="42.0" y="744.0" class="footnote">Hermeship owns its runtime; clawhip is an architecture reference, not a dependency.</text>
+</svg>

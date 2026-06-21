@@ -1,0 +1,343 @@
+{
+  "template_type": "data-flow",
+  "style": 6,
+  "width": 1280,
+  "height": 760,
+  "title": "Hermeship Event Flow",
+  "subtitle": "From Hermes/CLI input to sanitized typed events, route decisions, safe messages, and release evidence",
+  "containers": [
+    {
+      "x": 56,
+      "y": 118,
+      "width": 1168,
+      "height": 112,
+      "label": "",
+      "side_label": "Input",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    },
+    {
+      "x": 56,
+      "y": 274,
+      "width": 1168,
+      "height": 144,
+      "label": "",
+      "side_label": "Normalize",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    },
+    {
+      "x": 56,
+      "y": 462,
+      "width": 820,
+      "height": 142,
+      "label": "",
+      "side_label": "Deliver",
+      "side_label_x": 28,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    },
+    {
+      "x": 914,
+      "y": 462,
+      "width": 310,
+      "height": 142,
+      "label": "",
+      "side_label": "",
+      "side_label_x": 932,
+      "side_label_anchor": "start",
+      "stroke": "#ded8cf",
+      "fill": "none"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "hook",
+      "kind": "rect",
+      "x": 92,
+      "y": 146,
+      "width": 190,
+      "height": 58,
+      "label": "/api/hermes/hook",
+      "sublabel": "gateway envelope",
+      "type_label": "HERMES",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "event",
+      "kind": "rect",
+      "x": 356,
+      "y": 146,
+      "width": 190,
+      "height": 58,
+      "label": "POST /event",
+      "sublabel": "IncomingEvent JSON",
+      "type_label": "API",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "cli",
+      "kind": "rect",
+      "x": 620,
+      "y": 146,
+      "width": 190,
+      "height": 58,
+      "label": "CLI Emit",
+      "sublabel": "send / source paths",
+      "type_label": "LOCAL",
+      "fill": "#e9f1fb",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "fixtures",
+      "kind": "document",
+      "x": 940,
+      "y": 136,
+      "width": 190,
+      "height": 70,
+      "label": "Fixtures",
+      "sublabel": "synthetic only",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3"
+    },
+    {
+      "id": "parse",
+      "kind": "rect",
+      "x": 118,
+      "y": 318,
+      "width": 180,
+      "height": 64,
+      "label": "Parse + Alias",
+      "sublabel": "kind / event / type",
+      "type_label": "INGRESS",
+      "fill": "#f7ecda",
+      "stroke": "#d0b893",
+      "flat": true
+    },
+    {
+      "id": "sanitize",
+      "kind": "double_rect",
+      "x": 388,
+      "y": 310,
+      "width": 198,
+      "height": 78,
+      "label": "Sanitize Payload",
+      "sublabel": "drop bodies, redact secrets",
+      "type_label": "PRIVACY",
+      "fill": "#c8e4db",
+      "stroke": "#8c6f5a"
+    },
+    {
+      "id": "typed",
+      "kind": "rect",
+      "x": 690,
+      "y": 318,
+      "width": 200,
+      "height": 64,
+      "label": "Typed Body",
+      "sublabel": "Hermes / observer / local",
+      "type_label": "ENVELOPE",
+      "fill": "#c8e4db",
+      "stroke": "#8c6f5a",
+      "flat": true
+    },
+    {
+      "id": "queue",
+      "kind": "cylinder",
+      "x": 1000,
+      "y": 302,
+      "width": 150,
+      "height": 88,
+      "label": "Queue",
+      "sublabel": "pending / capacity",
+      "fill": "#e5e8df",
+      "stroke": "#7b8b5c"
+    },
+    {
+      "id": "router",
+      "kind": "rect",
+      "x": 128,
+      "y": 506,
+      "width": 180,
+      "height": 64,
+      "label": "Route Match",
+      "sublabel": "glob + metadata",
+      "type_label": "ROUTER",
+      "fill": "#f7ecda",
+      "stroke": "#d0b893",
+      "flat": true
+    },
+    {
+      "id": "render",
+      "kind": "rect",
+      "x": 394,
+      "y": 506,
+      "width": 180,
+      "height": 64,
+      "label": "Render Safe",
+      "sublabel": "compact / inline / raw",
+      "type_label": "RENDER",
+      "fill": "#f7ecda",
+      "stroke": "#d0b893",
+      "flat": true
+    },
+    {
+      "id": "sink",
+      "kind": "rect",
+      "x": 660,
+      "y": 506,
+      "width": 180,
+      "height": 64,
+      "label": "Sink Send",
+      "sublabel": "Discord or fake",
+      "type_label": "BEST EFFORT",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3",
+      "flat": true
+    },
+    {
+      "id": "preflight",
+      "kind": "rect",
+      "x": 952,
+      "y": 506,
+      "width": 220,
+      "height": 64,
+      "label": "Release Preflight",
+      "sublabel": "docs fields, not live pass",
+      "type_label": "CHECK",
+      "fill": "#efe8de",
+      "stroke": "#d0c3b3",
+      "flat": true
+    }
+  ],
+  "arrows": [
+    {
+      "source": "hook",
+      "target": "parse",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "control",
+      "label": "hook"
+    },
+    {
+      "source": "event",
+      "target": "parse",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "data",
+      "label": "json",
+      "route_points": [[451, 248], [208, 248]]
+    },
+    {
+      "source": "cli",
+      "target": "parse",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "data",
+      "label": "client post",
+      "route_points": [[715, 248], [208, 248]]
+    },
+    {
+      "source": "parse",
+      "target": "sanitize",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "payload"
+    },
+    {
+      "source": "sanitize",
+      "target": "typed",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "safe fields"
+    },
+    {
+      "source": "typed",
+      "target": "queue",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "write",
+      "label": "try_send",
+      "dashed": true
+    },
+    {
+      "source": "queue",
+      "target": "router",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "read",
+      "label": "consume",
+      "route_points": [[1075, 438], [218, 438]]
+    },
+    {
+      "source": "router",
+      "target": "render",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "control",
+      "label": "delivery"
+    },
+    {
+      "source": "render",
+      "target": "sink",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "data",
+      "label": "summary"
+    },
+    {
+      "source": "fixtures",
+      "target": "preflight",
+      "source_port": "bottom",
+      "target_port": "top",
+      "flow": "read",
+      "label": "policy",
+      "route_points": [[1035, 438], [1062, 438]]
+    },
+    {
+      "source": "sink",
+      "target": "preflight",
+      "source_port": "right",
+      "target_port": "left",
+      "flow": "async",
+      "label": "manual",
+      "dashed": true
+    }
+  ],
+  "legend": [
+    {
+      "flow": "data",
+      "label": "Sanitized event data"
+    },
+    {
+      "flow": "control",
+      "label": "Routing control"
+    },
+    {
+      "flow": "write",
+      "label": "Queue write"
+    },
+    {
+      "flow": "async",
+      "label": "Manual live boundary"
+    }
+  ],
+  "legend_position": "bottom-left",
+  "legend_box": true,
+  "legend_box_fill": "#fffaf3",
+  "legend_y": 636,
+  "footer_x": 356,
+  "footer": "Default verification is local and deterministic; real Discord/Hermes live checks remain explicit opt-in."
+}
