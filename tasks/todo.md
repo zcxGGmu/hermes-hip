@@ -129,7 +129,7 @@
 - 当前远端：`git@github.com:zcxGGmu/hermeship.git`，GitHub 提示该仓库已 moved 到 `git@github.com:zcxGGmu/hermes-hip.git`。
 - 当前目标 URL：`https://zcxggmu.github.io/hermes-hip/`。
 - 本机没有 `gh` CLI，没有 `GITHUB_TOKEN` / `GH_TOKEN`，因此不能直接用 API 配置 Pages 设置。
-- 远端当前没有 `gh-pages` 分支。
+- 执行前远端没有 `gh-pages` 分支；本轮已新建并推送。
 - 计划文档：`docs/superpowers/plans/2026-06-23-hermeship-github-pages-deployment.md`。
 - 决策：不重命名仓库，使用当前真实仓库名 `hermes-hip` 对应的 Pages URL。
 
@@ -148,26 +148,33 @@
   - 决策：新增 GitHub Actions Pages workflow，并同步推送 `gh-pages` 兼容发布源。
   - 决策：发布 URL 使用 `https://zcxggmu.github.io/hermes-hip/`。
 
-- [ ] 配置 GitHub Pages 发布。
+- [x] 配置 GitHub Pages 发布。
   - 新增：`.github/workflows/pages.yml`。
   - 新增：`site/.nojekyll`。
   - 修改：`site/index.html` 内 GitHub/README/ARCHITECTURE 链接到当前 `zcxGGmu/hermes-hip` 仓库。
 
-- [ ] 运行本地验证。
+- [x] 运行本地验证。
   - 命令：`rg -n "zcxGGmu/hermes-hip" site/index.html`，预期匹配公开链接。
   - 命令：`rg -n "zcxGGmu/hermeship|github.io/hermeship" site/index.html docs/superpowers/plans/2026-06-23-hermeship-github-pages-deployment.md`，预期无匹配。
   - 命令：`git diff --check`。
   - 命令：本地静态服务检查 `site/` 首页状态。
 
-- [ ] 提交并推送。
+- [x] 提交并推送。
   - commit 信息：中文说明 GitHub Pages 发布配置、验证和影响。
   - 推送：`origin/codex/milestone-1-cli` 与 `origin/main`。
   - 推送：`site/` subtree 到 `origin/gh-pages`。
 
-- [ ] 验证公网访问。
+- [x] 验证公网访问。
   - 命令：`curl -I -L --max-time 30 https://zcxggmu.github.io/hermes-hip/`。
   - 目标：返回 HTTP 200，页面包含 Hermeship 静态官网内容。
 
 ## Review
 
-- 待补：发布配置结果、推送结果、公网验证结果和剩余风险。
+- 已新增 `.github/workflows/pages.yml`，main 分支变更 `site/**` 或 workflow 时会把 `site/` 作为 GitHub Pages artifact 发布。
+- 已新增 `site/.nojekyll`，避免 GitHub Pages 对静态资源执行 Jekyll 处理。
+- 已将 `site/index.html` 内 README、English README、ARCHITECTURE 和 GitHub 链接统一改回当前真实仓库 `https://github.com/zcxGGmu/hermes-hip`。
+- 已提交：`a03adcf chore: 配置 Hermeship GitHub Pages 发布`、`68954f3 chore: 改用 hermes-hip Pages 地址`。
+- 已推送：`origin/codex/milestone-1-cli`、`origin/main`、`origin/gh-pages`。
+- 已验证公网：`https://zcxggmu.github.io/hermes-hip/` 第 3 次轮询返回 HTTP 200，页面内容包含 `Hermeship`、`daemon-first` 和 `zcxGGmu/hermes-hip`。
+- 已验证资源：`/assets/branding/hermeship-icon.png` 返回 HTTP 200，`/js/main.js?v=20260623-2` 返回 HTTP 200，`/css/styles.css?v=20260623-2` 通过 Python HTTP client 返回 HTTP 200 且 `content-type` 为 `text/css; charset=utf-8`。
+- 剩余风险：本地 `.git/config` 仍写着旧 remote `zcxGGmu/hermeship.git`，尝试 `git remote set-url` 被沙箱拒绝；实际 push 已由 GitHub moved redirect 成功写入 `zcxGGmu/hermes-hip`。后续可在本机手动运行 `git remote set-url origin git@github.com:zcxGGmu/hermes-hip.git` 消除提示。
