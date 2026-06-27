@@ -242,3 +242,47 @@
 - 已验证：关键章节与链接 `rg` 检查、边界声明 `rg` 检查、CSS 响应式断点检查、`git diff --check`、本地静态服务 `/` 与 `/docs/` 内容检查、HTML 相对资源路径检查、浏览器桌面几何检查无横向溢出。
 - 已验证线上：首页 `https://zcxggmu.github.io/hermes-hip/` 返回新首页内容，包含 `What’s New`、`Observe · Scrub · Deliver`、`Evidence & Boundaries` 和 `Docs Hub`；文档页 `https://zcxggmu.github.io/hermes-hip/docs/` 返回 `Hermeship 文档索引`；`/css/styles.css?v=20260624-1` 返回 HTTP 200。
 - 验证限制：本地环境没有 Playwright/Chromium 包，内置浏览器 viewport override 未实际切换到移动宽度；移动端通过 CSS 断点静态检查和本地 HTML/CSS 路径检查覆盖，最终仍需线上或真实浏览器抽查。
+
+---
+
+# Task: 2026-06-27 Hermeship 官网首屏项目标识去重
+
+更新时间：2026-06-27
+
+用户确认产品官网开头位置项目标识重复堆叠太多，应仅保留一个项目图标居中放置。本轮范围限定为 `site/` 首页首屏品牌区，不修改 Rust 功能代码，不改变能力声明，不重做整体官网设计。
+
+## 当前基线
+
+- 当前分支：`codex/milestone-1-cli`。
+- 当前线上地址：`https://zcxggmu.github.io/hermes-hip/`。
+- 当前重复点：首页 nav 小图标、hero 居中图标、hero lockup 图、hero `Hermeship` 标题同时出现。
+- 实施 plan：`docs/superpowers/plans/2026-06-27-hermeship-hero-brand-dedupe.md`。
+
+## 本轮执行计划
+
+- [x] 写入实施计划。
+  - 目标：首屏主体只保留一个居中的项目图标。
+  - 范围：homepage hero/nav 品牌重复修正。
+
+- [x] 简化首页首屏品牌区。
+  - 修改：`site/index.html`。
+  - 移除：hero lockup 图。
+  - 移除：hero 重复 `h1` 标识。
+  - 保留：一个居中的 `hero__icon-frame`。
+  - 调整：首页 nav 使用文字品牌，避免首屏再出现第二个项目图标。
+
+- [x] 补齐样式。
+  - 修改：`site/css/styles.css`。
+  - 调整：text-only brand、hero icon spacing。
+  - 保留：移动端无横向滚动、触控目标不低于 44px。
+
+- [ ] 验证、提交并发布。
+  - 命令：`rg` 检查首页项目标识数量。
+  - 命令：`git diff --check`。
+  - 命令：本地静态服务检查 `/`。
+  - 推送：`origin/codex/milestone-1-cli`、`origin/main`、`origin/gh-pages`。
+  - 验证：`https://zcxggmu.github.io/hermes-hip/` 返回新首页内容。
+
+## Review
+
+- 待补。
